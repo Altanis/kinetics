@@ -15,20 +15,58 @@ import { EntityConfig, CircleConfig, EntityForm, CollisionManager } from "./typi
 
 import { Movement, Environment, EntityType, Colors  } from "./typings/Enums";
 
-/** SYSTEM */
-export { System };  
+// Check if the code is running in a web browser environment
+const isWebEnvironment = typeof window !== 'undefined';
 
-/** B O D I E S */
+// SYSTEM
+export { System };
+
+// B O D I E S
 export { Entity, Circle };
 
-/** C O L L I S I O N */
+// C O L L I S I O N
 export const Collision = { CollisionResolver, SpatialHashGrid };
 
-/** U T I L S */
+// U T I L S
 export { Camera, Renderer, Vector };
 
-/** I N T E R F A C E S */
-export { CameraConfig, SystemRenderingConfig, EntityRenderingConfig, SystemConfig, EntityConfig, CircleConfig, EntityForm, CollisionManager };
+// I N T E R F A C E S
+export {
+    CameraConfig,
+    SystemRenderingConfig,
+    EntityRenderingConfig,
+    SystemConfig,
+    EntityConfig,
+    CircleConfig,
+    EntityForm,
+    CollisionManager
+};
 
-/** E N U M S */
+// E N U M S
 export { Movement, Environment, EntityType, Colors };
+
+// Attach the exports to the `window` object in a web environment
+if (isWebEnvironment) {
+    /** @ts-ignore */
+    window.System = System;
+    /** @ts-ignore */
+    window.Entity = Entity;
+    /** @ts-ignore */
+    window.Circle = Circle;
+    /** @ts-ignore */
+    window.Collision = Collision;
+    /** @ts-ignore */
+    window.Camera = Camera;
+    /** @ts-ignore */
+    window.Renderer = Renderer;
+    /** @ts-ignore */
+    window.Vector = Vector;
+    /** @ts-ignore */
+    window.Movement = Movement;
+    /** @ts-ignore */
+    window.Environment = Environment;
+    /** @ts-ignore */
+    window.EntityType = EntityType;
+    /** @ts-ignore */
+    window.Colors = Colors;
+}

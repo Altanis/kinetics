@@ -4,8 +4,8 @@ const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
     entry: {
-        ["kinetics"]: path.join(__dirname, "examples", "Index.ts"),
-        ["kinetics.min"]: path.join(__dirname, "examples", "Index.ts"),
+        ["kinetics"]: path.join(__dirname, "src", "Index.ts"),
+        ["kinetics.min"]: path.join(__dirname, "src", "Index.ts"),
     },
     output: {
         filename: "[name].js", 

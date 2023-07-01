@@ -1,9 +1,3 @@
-// import System from "../src/System";
-// import Circle from "../src/entities/shapes/Circle";
-// import Entity from "../src/entities/Entity";
-// import { Colors, Movement } from "../src/typings/Enums";
-// import Vector from "../src/utils/Vector";
-
 import { 
     System,
     Circle,
