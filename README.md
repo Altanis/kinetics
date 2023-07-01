@@ -24,4 +24,7 @@ Specs of Computer Performed Upon: Mac M2 Core Air
 - 16-core Neural Engine
 - 100GB/s memory bandwidth
 
+<img width="870" alt="image" src="https://github.com/Altanis/kinetics-ts/assets/38045884/b5532560-8e2f-4dfd-bb3c-dc18773eabd8">
+
+
 The benchmarks support how fast this engine is, comparatively.
