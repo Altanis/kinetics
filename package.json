@@ -2,15 +2,10 @@
   "name": "kinetics.ts",
   "version": "1.0.0",
   "description": "A TypeScript physics engine for 2D Space.",
-  "main": "src/System.ts",
+  "main": "dist/Index.js",
   "scripts": {
-    "web": "npx webpack && http-server -a localhost -p 8080 -c-1 -d false ./ --proxy http://localhost:8080/examples/index.html",
-    "web:watch": "nodemon --exec \"npm run web\" --watch src --watch examples --ext ts",
-
-    "server": "tsc -p . && node bench.js",
-    "server:watch": "nodemon --exec \"npm run server\" --watch src --watch examples --ext js,ts",
-  
-    "start": "npm run web:watch"
+    "build": "tsc -p .",
+    "start": "node dist/Index.js"
   },
   "author": "Altanis",
   "license": "ISC",
