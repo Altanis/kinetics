@@ -1,5 +1,5 @@
 <!-- ![image](https://github.com/Altanis/kinetics-ts/assets/38045884/f9985f30-5d88-48bc-89ca-1b917369665f) -->
-![image](https://github.com/Altanis/kinetics-ts/assets/38045884/c75cc5e6-241c-4264-873b-16f8b3197a61?raw=true)
+![image](https://github.com/Altanis/kinetics-ts/blob/main/img/kinetics.jpeg?raw=true)
 <sub>Credits to SimplyTav for creating this logo.</sub>
 
 # About
@@ -23,6 +23,6 @@ System Specifications:
 - 16-core Neural Engine
 - 100GB/s memory bandwidth
 
-<img width="870" alt="image" src="https://github.com/Altanis/kinetics-ts/assets/38045884/b5532560-8e2f-4dfd-bb3c-dc18773eabd8?raw=true">
+<img width="870" alt="image" src="https://github.com/Altanis/kinetics-ts/blob/main/img/bench.png?raw=true">
 
 The benchmarks provide evidence of the engine's exceptional speed and performance in comparison to other alternatives.
