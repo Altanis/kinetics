@@ -25,36 +25,35 @@ export default function Introduction() {
             <p className="my-6 mx-2 text-white text-sm md:md:text-lg">
                 <CodeBlock children={`
 /** Create a system with 100 circles. */
-const {
-    System,
-    Bodies: { Circle },
-    Utils: { Vector },
-    Enums: { CollisionManager }
-} = require("kinetics.ts");       
+const { System, Circle, Vector } = require("./dist/Index");
 
 const system = new System({
-    friction: 0.1,
-    gravity: 0.1,
     tickRate: 60,
-    collisionManager: CollisionManager.SpatialHashing,
-    cellSize: 6
+    friction: 0.1,
+    collisionInfo: {
+        cellSize: 6,
+    },
+    bounds: new Vector(1920, 1080)
 });
 
-const opts = {
-    mass: 10,
-    speed: 10,
-    elasticity: 1,
-    angularSpeed: 1,
-};
-
 for (let i = 0; i < 100; i++) {
-    const circle = new Circle({
-        form: { vertices: [new Vector(0, 0)] },
-        radius: 10,
-        ...opts
-    });
+    const radius = 10;
 
-    system.addEntity(circle);
+    const entity = new Circle(
+        {
+            form: {
+                vertices: [new Vector(0, 0)],
+            },
+            radius,
+            mass: 10,
+            speed: 1,
+            rotate: false,
+            elasticity: 1,
+            angularSpeed: 1,
+        },
+        system
+    );
+    system.addEntity(entity);
 }
                 `} language="typescript" />
             </p>
