@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Game Renderer</title>
+    <style>
+        body {
+            background: #000;
+            border: 0;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #stats {
+            position: absolute;
+            z-index: 999;
+            color: white;
+        }
+
+        p {
+            margin: 0;
+            padding: 0;
+        }
+
+        canvas {
+            background: #fff;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 100%;
+            width: 100%;
+            cursor: default;
+        }
+    </style>
+</head>
+<body>
+    <div id="stats">
+        <p>FPS: <span id="fps">60</span></p>
+        <p>Momentum: <span id="momentum">0</span></p>
+        <p>Kinetic Energy: <span id="ke">0</span></p>
+        <p>Tick Rate: <span id="tickRate">0</span></p>
+        <p>Memory Usage: <span id="memoryUsage">0</span></p>
+        <p>Show Collision Data: <input type="checkbox" id="showHitbox" checked></p>
+        <p>Show Vectors: <input type="checkbox" id="showVectors" checked></p>
+    </div>
+    <canvas id="canvas"></canvas>
+    <script src="../build/kinetics.js" defer></script>
+</body>
+</html>

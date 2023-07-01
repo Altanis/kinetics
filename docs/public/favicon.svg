@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200">
+  <defs>
+    <style>
+      .red-circle {
+        fill: red;
+        opacity: 0.8;
+      }
+
+      .blue-circle {
+        fill: blue;
+        opacity: 0.8;
+      }
+
+      .red-tail {
+        stroke: red;
+        stroke-width: 5;
+        fill: none;
+        opacity: 0.6;
+      }
+
+      .blue-tail {
+        stroke: blue;
+        stroke-width: 5;
+        fill: none;
+        opacity: 0.6;
+      }
+
+      .explosion {
+        fill: yellow;
+        opacity: 0.8;
+      }
+    </style>
+  </defs>
+  
+  <circle class="red-circle" cx="100" cy="100" r="80"/>
+  <circle class="blue-circle" cx="300" cy="100" r="80"/>
+  <circle class="explosion" cx="200" cy="100" r="40"/>
+  <circle class="explosion" cx="200" cy="100" r="30"/>
+  <circle class="explosion" cx="200" cy="100" r="20"/>
+  <circle class="explosion" cx="200" cy="100" r="10"/>
+  
+  <!-- Red circle tail -->
+  <path class="red-tail" d="M100,100 Q40,140 60,100 T20,100 T-20,100"/>
+  
+  <!-- Blue circle tail -->
+  <path class="blue-tail" d="M300,100 Q320,80 340,100 T380,100 T420,100"/>
+</svg>

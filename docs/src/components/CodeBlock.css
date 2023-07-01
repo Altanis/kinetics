@@ -1,0 +1,6 @@
+code[class*="language-"] {
+    font-family: "JetBrains Mono" !important;
+    font-size: 13px;
+    min-width: fit-content;
+    background: rgb(34, 39, 46, 0.6);
+};

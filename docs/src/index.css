@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code&family=Inter&family=Ubuntu&family=JetBrains+Mono&display=swap');
+
+html, body {
+    width: 100%;
+    height: 100%;
+
+    margin: 0;
+    padding: 0;
+    
+    font-family: "Ubuntu";
+    background: rgb(15, 23, 43);
+
+    overflow: hidden;
+};
+
+/* Create a thin scrollbar track */
+::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+/* Create a scrollbar thumb */
+::-webkit-scrollbar-thumb {
+    background-color: #565869;
+    border-radius: 5px;
+}
+
+/* Increase the width of the scrollbar */
+::-webkit-scrollbar {
+    width: 5px;
+}

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 150">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-2,
+      .cls-3,
+      .cls-5,
+      .cls-7 {
+        fill: none;
+        stroke-miterlimit: 10;
+      }
+
+      .cls-2 {
+        stroke: #5c7786;
+      }
+
+      .cls-3 {
+        stroke: #ccc;
+      }
+
+      .cls-4,
+      .cls-8 {
+        fill: #ff00ed;
+      }
+
+      .cls-5 {
+        stroke: #ff00ed;
+      }
+
+      .cls-6 {
+        fill: red;
+      }
+
+      .cls-7 {
+        stroke: red;
+      }
+
+      .cls-8 {
+        font-size: 10px;
+        font-family: ArialMT, Arial;
+      }
+    </style>
+  </defs>
+  <g id="Box">
+    <rect class="cls-1" width="250" height="150"></rect>
+  </g>
+  <g id="Shapes">
+    <rect class="cls-2" x="28.01" y="38.43" width="54" height="54" transform="translate(-10.53 10.55) rotate(-10)"></rect>
+    <polygon class="cls-2" points="179.96 9.36 149.9 61.43 210.02 61.43 179.96 9.36"></polygon>
+  </g>
+  <g id="Projection_Axis" data-name="Projection Axis">
+    <line class="cls-3" x1="10.77" y1="134.16" x2="230.38" y2="95.43"></line>
+  </g>
+  <g id="_2_3_4_Square_Projection_POints" data-name="2,3,4 Square Projection POints">
+    <circle class="cls-4" cx="38.43" cy="129.79" r="4"></circle>
+    <circle class="cls-4" cx="92.59" cy="120.23" r="4"></circle>
+    <line class="cls-5" x1="39.33" y1="129.12" x2="92.51" y2="119.74"></line>
+  </g>
+  <g id="_3_-_Triangle_Projection_lines" data-name="3 - Triangle Projection lines">
+    <circle class="cls-6" cx="179.68" cy="9.43" r="4"></circle>
+    <circle class="cls-6" cx="210.08" cy="60.93" r="4"></circle>
+    <circle class="cls-6" cx="150.24" cy="61.33" r="4"></circle>
+    <line class="cls-7" x1="150.65" y1="60.75" x2="158.98" y2="108.02"></line>
+    <line class="cls-7" x1="209.42" y1="60.03" x2="216.19" y2="98.44"></line>
+    <line class="cls-7" x1="179.36" y1="10.5" x2="195.33" y2="101.1"></line>
+    <circle class="cls-4" cx="196.03" cy="102.02" r="2.26"></circle>
+    <text class="cls-8" transform="translate(108.32 131.21)">The points of the triangle <tspan x="0" y="10">shape projected onto the axis</tspan>
+    </text>
+    <line class="cls-5" x1="202.5" y1="121.5" x2="208.92" y2="110.59"></line>
+    <polygon class="cls-4" points="212.5 104.5 210.96 115.14 208.65 111.04 203.95 111.02 212.5 104.5"></polygon>
+  </g>
+  <g id="_3_4_TriangleProj_Points" data-name="3,4 TriangleProj Points">
+    <line class="cls-5" x1="160.46" y1="107.76" x2="213.64" y2="98.38"></line>
+    <circle class="cls-4" cx="216.68" cy="98.36" r="4"></circle>
+    <circle class="cls-4" cx="158.58" cy="108.6" r="4"></circle>
+  </g>
+</svg>
