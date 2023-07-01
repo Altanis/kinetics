@@ -48,25 +48,17 @@ export { Movement, Environment, EntityType, Colors };
 // Attach the exports to the `window` object in a web environment
 if (isWebEnvironment) {
     /** @ts-ignore */
-    window.System = System;
-    /** @ts-ignore */
-    window.Entity = Entity;
-    /** @ts-ignore */
-    window.Circle = Circle;
-    /** @ts-ignore */
-    window.Collision = Collision;
-    /** @ts-ignore */
-    window.Camera = Camera;
-    /** @ts-ignore */
-    window.Renderer = Renderer;
-    /** @ts-ignore */
-    window.Vector = Vector;
-    /** @ts-ignore */
-    window.Movement = Movement;
-    /** @ts-ignore */
-    window.Environment = Environment;
-    /** @ts-ignore */
-    window.EntityType = EntityType;
-    /** @ts-ignore */
-    window.Colors = Colors;
+    window.Kinetics = {
+        System,
+        Entity,
+        Circle,
+        Collision,
+        Camera,
+        Renderer,
+        Vector,
+        Movement,
+        Environment,
+        EntityType,
+        Colors
+    };
 }

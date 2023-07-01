@@ -68,27 +68,19 @@ exports.Collision = { CollisionResolver: CollisionResolver_1.default, SpatialHas
 // Attach the exports to the `window` object in a web environment
 if (isWebEnvironment) {
     /** @ts-ignore */
-    window.System = System_1.default;
-    /** @ts-ignore */
-    window.Entity = Entity_1.default;
-    /** @ts-ignore */
-    window.Circle = Circle_1.default;
-    /** @ts-ignore */
-    window.Collision = exports.Collision;
-    /** @ts-ignore */
-    window.Camera = Camera_1.default;
-    /** @ts-ignore */
-    window.Renderer = Renderer_1.default;
-    /** @ts-ignore */
-    window.Vector = Vector_1.default;
-    /** @ts-ignore */
-    window.Movement = Enums_1.Movement;
-    /** @ts-ignore */
-    window.Environment = Enums_1.Environment;
-    /** @ts-ignore */
-    window.EntityType = Enums_1.EntityType;
-    /** @ts-ignore */
-    window.Colors = Enums_1.Colors;
+    window.Kinetics = {
+        System: System_1.default,
+        Entity: Entity_1.default,
+        Circle: Circle_1.default,
+        Collision: exports.Collision,
+        Camera: Camera_1.default,
+        Renderer: Renderer_1.default,
+        Vector: Vector_1.default,
+        Movement: Enums_1.Movement,
+        Environment: Enums_1.Environment,
+        EntityType: Enums_1.EntityType,
+        Colors: Enums_1.Colors
+    };
 }
 
 
