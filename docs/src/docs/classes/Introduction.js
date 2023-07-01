@@ -25,7 +25,7 @@ export default function Introduction() {
             <p className="my-6 mx-2 text-white text-sm md:md:text-lg">
                 <CodeBlock children={`
 /** Create a system with 100 circles. */
-const { System, Circle, Vector } = require("./dist/Index");
+const { System, Circle, Vector } = require("kinetics.ts");
 
 const system = new System({
     tickRate: 60,
