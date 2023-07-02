@@ -18,7 +18,7 @@ A blazingly fast, simple 2D physics engine for JavaScript and TypeScript, for bo
 To install this package on a server or a web framework, use the following command:
 
 ```bash
-npm install kinetics-ts
+npm install kinetics.ts
 ```
 
 For a vanilla HTML/CSS/JS project, use the following script tag:
