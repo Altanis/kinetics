@@ -42,3 +42,6 @@ System Specifications:
 <img width="870" alt="image" src="https://github.com/Altanis/kinetics-ts/blob/main/img/bench.png?raw=true">
 
 The benchmarks provide evidence of the engine's exceptional speed and performance in comparison to other alternatives.
+
+
+A C++ variant of this engine is underway as well, but may take some time.
