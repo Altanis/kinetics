@@ -6,6 +6,7 @@ import { Link, useLocation } from "react-router-dom";
 import Introduction from "./classes/Introduction";
 import NotFound from "./classes/NotFound";
 import TemplateDocs from "./classes/TemplateDocs";
+import Demo from "./classes/Demo";
 
 function RecursiveChildren({ children, name }) {
     if (!children || children.length === 0) return null;
@@ -14,7 +15,7 @@ function RecursiveChildren({ children, name }) {
         <ul className="flex flex-col ml-4">
             {
                 children.map((child, idx) => (
-                    <li key={idx} className={`text-left text-sm font-semibold`}>
+                    (<li key={idx} className={`text-left text-sm font-semibold`}>
                         <Link to={child.link}>
                             <a 
                                 className={`border-l border-r-0 border-t-0 border-b-0 border-solid border-[#999] ml-5 flex flex-col p-[5px] pl-6 ${child.name !== name && "hover:bg-[#FFFFFF30]"} duration-300 ${child.name === name ? "bg-accent text-white" : "text-white"}`}
@@ -23,7 +24,7 @@ function RecursiveChildren({ children, name }) {
                             </a>
                         </Link>
                         <RecursiveChildren children={child.children} />
-                    </li>
+                    </li>)
                 ))
             }
         </ul>
@@ -55,16 +56,19 @@ const possibleClasses = Structure.reduce((acc, section) => {
 const URLMappings = new Map([
     ["docs", Introduction],
     ["notfound", NotFound],
+    ["demo", Demo]
 ]);
 
 for (let i = 0; i < possibleClasses.length; i++) {
+    if (possibleClasses[i] === "demo") continue;
     URLMappings.set(possibleClasses[i], TemplateDocs);
 };
 
 export default function Docs() {
     const location = useLocation();
 
-    const [displayClasses, setDisplayClasses] = useState(true);
+    const [displayHome, setDisplayHome] = useState(true);
+    const [displayClasses, setDisplayClasses] = useState(false);
     const [displayTypings, setDisplayTypings] = useState(false);
     const [nerdified, setNerdified] = useState(false);
 
@@ -74,9 +78,11 @@ export default function Docs() {
     useEffect(() => {
         const lastSlash = location.pathname.lastIndexOf("/");
         const url = location.pathname.substring(lastSlash + 1) || "docs";
+        console.log(url.toLowerCase());
         setDocumentationComponent(url.toLowerCase());
     }, [location]);
 
+    console.log(URLMappings.get(DocumentationComponent));
     const RenderComponent = URLMappings.get(DocumentationComponent) || NotFound;
 
     const folders = [
@@ -94,6 +100,8 @@ export default function Docs() {
         let folder = location.pathname.split("/")[i];
         folder = folder.charAt(0).toUpperCase() + folder.slice(1);
         if (!possibleClasses.includes(folder.toLowerCase())) {
+            currentFolder = folder.toLowerCase() === "docs" && { name: "Introduction", component: Introduction };
+
             if (folder.toLowerCase() === "docs") continue;
             if (DocumentationComponent !== "notfound") setDocumentationComponent("notfound");
             break;
@@ -103,7 +111,9 @@ export default function Docs() {
             name: folder,
             link: `/${location.pathname.split("/").slice(1, i + 1).join("/")}`
         });
-        currentFolder = flattenedStructure.find(structure => structure.name === folder);
+        currentFolder = folder.toLowerCase() === "docs" ? 
+            { name: "Introduction", component: Introduction } :
+            flattenedStructure.find(structure => structure.name === folder);
     }
 
     return (
@@ -123,13 +133,13 @@ export default function Docs() {
                                                 <Fragment key={idx}>
                                                     <button 
                                                         className="bg-accent rounded m-3 p-3 outline-none border-none text-white text-left text-lg font-semibold hover:bg-rose-600 duration-300"
-                                                        onClick={() => section.name === "Classes" ? setDisplayClasses(!displayClasses) : setDisplayTypings(!displayTypings)}
+                                                        onClick={() => section.name === "Classes" ? setDisplayClasses(!displayClasses) : (section.name === "Home" ? setDisplayHome(!displayHome) : setDisplayTypings(!displayTypings))}
                                                     >
                                                         <i className="fas fa-sitemap mr-2"></i>
                                                         {section.name}
-                                                        <i className={`fas fa-chevron-down ml-2 top-0 right-0 transition-transform transform ${section.name === "Classes" ? (displayClasses && "rotate-180") : (displayTypings && "rotate-180")}`}></i>
+                                                        <i className={`fas fa-chevron-down ml-2 top-0 right-0 transition-transform transform ${section.name === "Classes" ? (displayClasses && "rotate-180") : (section.name === "Home" ? (displayHome && "rotate-180") : (displayTypings && "rotate-180"))}`}></i>
                                                     </button>
-                                                    {(section.name === "Classes" ? displayClasses : displayTypings) ? <div>
+                                                    {(section.name === "Classes" ? displayClasses : (section.name === "Home" ? displayHome : displayTypings)) ? <div>
                                                         <RecursiveChildren children={section.children} name={currentFolder?.name} />
                                                     </div> : null}
                                                 </Fragment>

@@ -21,6 +21,19 @@ import VN from "../static/latex/vector_normal.png";
 
 export default [
     {
+        name: "Home",
+        children: [
+            {
+                name: "Introduction",
+                link: "/docs",
+            },
+            {
+                name: "Demo",
+                link: "/docs/demo",
+            }
+        ]        
+    },
+    {
         name: "Classes",
         children: [
             {
