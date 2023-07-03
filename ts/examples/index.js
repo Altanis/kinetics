@@ -31,8 +31,8 @@ function invertColor(hex) {
     var r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16), g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16), b = (255 - parseInt(hex.slice(4, 6), 16)).toString(16);
     return `#${r.padStart(2, "0")}${g.padStart(2, "0")}${b.padStart(2, "0")}`;
 }
-const width = 1920;
-const height = 1080;
+const width = 1920 * window.devicePixelRatio - 500;
+const height = 1080 * window.devicePixelRatio - 500;
 const centerX = width / 2;
 const centerY = height / 2;
 const sysRad = calculateApothem(width, height, centerX, centerY);
@@ -95,13 +95,13 @@ const system = window.system = new System({
         // gridSize: cellSize,
         hooks: {
             preRender: function (context) {
-                const width = window.innerWidth;
-                const height = window.innerHeight;
-                const topLeft = new Vector(-width, height);
-                context.strokeStyle = Colors.Red;
-                context.lineWidth = 1;
-                context.beginPath();
-                context.strokeRect(topLeft.x, -topLeft.y, width * 2, height * 2);
+                const halfWidth = system.width / 2;
+                const halfHeight = system.height / 2;
+
+                const topLeft = {x: -halfWidth, y: -halfHeight};
+
+                context.strokeStyle = Colors.Peach;
+                context.strokeRect(topLeft.x, topLeft.y, system.width, system.height);
             },
             postRender: function (context) {
                 var _a;
@@ -225,14 +225,14 @@ for (let i = 0; i < 0; i++) {
     const ent2 = new Circle(Object.assign({ form: { vertices: [new Vector(1000 * Math.random(), 1000 * Math.random())] }, radius: 50 }, opts), system);
     // system.addEntity(ent2);
 }
-for (let i = 0; i < 2; i++) {
-    const isCircle = Math.random() <= 1;
+for (let i = 0; i < 100; i++) {
+    const isCircle = Math.random() < 0.5;
     /** random x & y coordinates which can be negative (given system.radius) */
     let x = i === 0 ? 0 : Math.random() * ((sysRad - 2000) * 2) - (sysRad - 2000);
     const y = i === 0 ? 0 : Math.random() * ((sysRad - 2000) * 2) - (sysRad - 2000);
     // if (x == 0) x = -100;
     // if (x > 0) x = -x - 100;
-    const sides = 3;
+    const sides = Math.floor(Math.random() * 10) + 3;
     // const sides = 4;
     const radius = 50;
     const color = [
@@ -294,7 +294,7 @@ for (let i = 0; i < 2; i++) {
             },
             // vertices: generatePolygon(sides, radius, 0, x, y),
             mass: 10,
-            speed: 10,
+            speed: 1,
             elasticity: 1,
             angularSpeed: 1,
             rotate: true,

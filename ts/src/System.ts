@@ -110,8 +110,6 @@ export default class System extends EventEmitter {
         this.camera = new Camera(config.camera || {}, this);
         this.renderer = new Renderer(config.render, this);
 
-        this.verbose = !!config.verbose;
-
         if (!config.collisionInfo) throw new ConfigurationError("Collision information must be specified for the system.");
 
         this.CollisionManager = new SpatialHashGrid(this, config.collisionInfo.cellSize || 12);
@@ -139,7 +137,7 @@ export default class System extends EventEmitter {
         this.CollisionManager = engine;
     };
 
-    private update() {
+    private update() {        
         const time = performance.now();
 
         this.CollisionManager.clear();
@@ -159,7 +157,7 @@ export default class System extends EventEmitter {
             performance.memory?.usedJSHeapSize / 1024 / 1024 :
             process.memoryUsage().heapUsed / 1024 / 1024;
 
-        if (this.config.useRAF) requestAnimationFrame(this.update.bind(this));
+        if (this.config.useRAF !== false) requestAnimationFrame(this.update.bind(this));
     };
 
     /** Adds an entity to the system. */

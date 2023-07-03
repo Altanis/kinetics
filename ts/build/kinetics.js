@@ -171,7 +171,6 @@ class System extends EventEmitter_1.default {
         this.gravity = config.gravity === undefined ? 0 : config.gravity;
         this.camera = new Camera_1.default(config.camera || {}, this);
         this.renderer = new Renderer_1.default(config.render, this);
-        this.verbose = !!config.verbose;
         if (!config.collisionInfo)
             throw new Error_1.ConfigurationError("Collision information must be specified for the system.");
         this.CollisionManager = new SpatialHashGrid_1.default(this, config.collisionInfo.cellSize || 12);
@@ -214,7 +213,7 @@ class System extends EventEmitter_1.default {
             /** @ts-ignore */
             ((_a = performance.memory) === null || _a === void 0 ? void 0 : _a.usedJSHeapSize) / 1024 / 1024 :
             process.memoryUsage().heapUsed / 1024 / 1024;
-        if (this.config.useRAF)
+        if (this.config.useRAF !== false)
             requestAnimationFrame(this.update.bind(this));
     }
     ;
@@ -925,7 +924,7 @@ class Camera {
         this.position = new Vector_1.default(0, 0);
         /** The measure of how zoomed out the camera is. */
         this.zoom = 1;
-        this.setCenter(position || { x: 0, y: 0 });
+        this.setCenter(position || new Vector_1.default(0, 0));
         this.zoom = (zoom || 1);
         this.system = system;
     }
