@@ -175,15 +175,20 @@ class System extends EventEmitter_1.default {
         if (!config.collisionInfo)
             throw new Error_1.ConfigurationError("Collision information must be specified for the system.");
         this.CollisionManager = new SpatialHashGrid_1.default(this, config.collisionInfo.cellSize || 12);
-        /** Handle ticksystem. */
-        if (config.useRAF)
-            requestAnimationFrame(this.update.bind(this));
-        else {
-            this.tickRate = config.tickRate || 60;
-            setInterval(this.update.bind(this), 1000 / this.tickRate);
-        }
         if (this.verbose)
             console.log("[PHYSICS]: Engine started.");
+        /** Handle ticksystem. */
+        if (this.environment === Enums_1.Environment.Browser && config.useRAF !== false) {
+            requestAnimationFrame(this.update.bind(this));
+            return;
+        }
+        this.tickRate = config.tickRate || 60;
+        setInterval(this.update.bind(this), 1000 / this.tickRate);
+        // if (config.useRAF) requestAnimationFrame(this.update.bind(this));
+        // else {
+        //     this.tickRate = config.tickRate || 60;
+        //     setInterval(this.update.bind(this), 1000 / this.tickRate);
+        // }
     }
     ;
     /** Sets the collision engine. */

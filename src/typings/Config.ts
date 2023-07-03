@@ -67,7 +67,7 @@ export interface SystemConfig {
     tickRate?: number;
     /** Whether or not verbose logs (such as warnings) should be logged. Default is `false`. */
     verbose?: boolean;
-    /** Whether or not the system should use `requestAnimationFrame` over `setInterval`. Defaults to `false`. */
+    /** Whether or not the system should use `requestAnimationFrame` over `setInterval`. Defaults to `true`. */
     useRAF?: boolean;
     
     /** The friction of the system when moving. Default is `0.1`. */

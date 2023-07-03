@@ -1108,13 +1108,15 @@ export default [
                                 keyword: "public",
                                 name: "position",
                                 returnType: "Vector",
-                                description: "The position of the camera. Defaults to `new Vector(0, 0)`.",
+                                defaultsTo: "new Vector(0, 0)",
+                                description: "The position of the camera.",
                             },
                             {
                                 keyword: "public",
                                 name: "zoom",
                                 returnType: "number",
-                                description: "The measure of how zoomed out the camera is. Defaults to `1`.",
+                                defaultsTo: "1",
+                                description: "The measure of how zoomed out the camera is.",
                             }
                         ]
                     }
@@ -1144,13 +1146,15 @@ export default [
                                 keyword: "public",
                                 name: "background",
                                 returnType: "string",
-                                description: "The background color of the canvas. Defaults to `Colors.White`.",
+                                defaultsTo: "Colors.White",
+                                description: "The background color of the canvas.",
                             },
                             {
                                 keyword: "public",
                                 name: "gridColor",
                                 returnType: "string",
-                                description: "The color of the grid lines. Defaults to `Colors.Black`.",
+                                defaultsTo: "Colors.Black",
+                                description: "The color of the grid lines.",
                             },
                             {
                                 keyword: "public",
@@ -1162,7 +1166,8 @@ export default [
                                 keyword: "public",
                                 name: "gridWidth",
                                 returnType: "number",
-                                description: "The width of the grid lines. Defaults to `1`.",
+                                defaultsTo: "1",
+                                description: "The width of the grid lines.",
                             },
                             {
                                 keyword: "public",
@@ -1204,7 +1209,8 @@ export default [
                                 keyword: "public",
                                 name: "strokeWidth",
                                 returnType: "number",
-                                description: "The width of the entity's stroke. Defaults to `1`.",
+                                defaultsTo: "1",
+                                description: "The width of the entity's stroke.",
                             },
                             {
                                 keyword: "public",
@@ -1252,31 +1258,36 @@ export default [
                                 keyword: "public",
                                 name: "tickRate",
                                 returnType: "number",
-                                description: "The tick rate of the system, in FPS. Defaults to `60`.",
+                                defaultsTo: "60",
+                                description: "The tick rate of the system, in FPS.",
                             },
                             {
                                 keyword: "public",
                                 name: "verbose",
                                 returnType: "boolean",
-                                description: "Whether or not the system should log information to the console. Defaults to `false`.",
+                                defaultsTo: "false",
+                                description: "Whether or not the system should log information to the console.",
                             },
                             {
                                 keyword: "public",
                                 name: "useRAF",
                                 returnType: "boolean",
-                                description: "Whether or not the system should use requestAnimationFrame. Defaults to `false`.",
+                                defaultsTo: "true",
+                                description: "Whether or not the system should use `requestAnimationFram`e`.",
                             },
                             {
                                 keyword: "public",
                                 name: "friction",
                                 returnType: "number",
-                                description: "The friction of the system. Defaults to `0.1`.",
+                                defaultsTo: "0.1",
+                                description: "The friction of the system.",
                             },
                             {
                                 keyword: "public",
                                 name: "gravity",
                                 returnType: "number",
-                                description: "The gravity of the system. Defaults to `0`.",
+                                defaultsTo: "0",
+                                description: "The gravity of the system.",
                             },
                             {
                                 keyword: "public",
@@ -1360,7 +1371,8 @@ export default [
                                 keyword: "public",
                                 name: "static",
                                 returnType: "boolean",
-                                description: "Whether or not the entity is static. Defaults to `0`.",
+                                defaultsTo: "false",
+                                description: "Whether or not the entity is static.",
                             },
                             {
                                 keyword: "public",
@@ -1372,7 +1384,8 @@ export default [
                                 keyword: "public",
                                 name: "rotate",
                                 returnType: "boolean",
-                                description: "Whether or not the entity should rotate. Defaults to `false`.",
+                                defaultsTo: "true",
+                                description: "Whether or not the entity should rotate.",
                             },
                             {
                                 keyword: "public",
@@ -1384,7 +1397,7 @@ export default [
                                 keyword: "public",
                                 name: "hooks",
                                 returnType: "{ preResolve: (entity: Entity) => void, postResolve: (entity: Entity) => void }",
-                                description: "The hooks for a collision between itself and another entity. `preResolve` is called before the entity collides, and `postResolve` is called after the entities collide.",
+                                description: "The hooks for a collision between itself and another entity. `preResolve` is called before the entities collide, and `postResolve` is called after the entities collide.",
                             }
                         ]
                     }

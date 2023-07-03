@@ -116,14 +116,22 @@ export default class System extends EventEmitter {
 
         this.CollisionManager = new SpatialHashGrid(this, config.collisionInfo.cellSize || 12);
 
-        /** Handle ticksystem. */
-        if (config.useRAF) requestAnimationFrame(this.update.bind(this));
-        else {
-            this.tickRate = config.tickRate || 60;
-            setInterval(this.update.bind(this), 1000 / this.tickRate);
-        }
-
         if (this.verbose) console.log("[PHYSICS]: Engine started.");
+
+        /** Handle ticksystem. */
+        if (this.environment === Environment.Browser && config.useRAF !== false) {
+            requestAnimationFrame(this.update.bind(this));
+            return;
+        }
+        
+        this.tickRate = config.tickRate || 60;
+        setInterval(this.update.bind(this), 1000 / this.tickRate);
+        // if (config.useRAF) requestAnimationFrame(this.update.bind(this));
+        // else {
+        //     this.tickRate = config.tickRate || 60;
+        //     setInterval(this.update.bind(this), 1000 / this.tickRate);
+        // }
+
     };
 
     /** Sets the collision engine. */

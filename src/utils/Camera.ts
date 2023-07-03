@@ -19,7 +19,7 @@ export default class Camera {
     };
 
     constructor({position, zoom}: CameraConfig, system: System) {
-        this.setCenter(position || { x: 0, y: 0 });
+        this.setCenter(position || new Vector(0, 0));
         this.zoom = (zoom || 1);
         this.system = system;
     };
