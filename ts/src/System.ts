@@ -109,6 +109,7 @@ export default class System extends EventEmitter {
         
         this.camera = new Camera(config.camera || {}, this);
         this.renderer = new Renderer(config.render, this);
+        this.verbose = config.verbose || false;
 
         if (!config.collisionInfo) throw new ConfigurationError("Collision information must be specified for the system.");
 

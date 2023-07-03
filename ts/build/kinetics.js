@@ -171,6 +171,7 @@ class System extends EventEmitter_1.default {
         this.gravity = config.gravity === undefined ? 0 : config.gravity;
         this.camera = new Camera_1.default(config.camera || {}, this);
         this.renderer = new Renderer_1.default(config.render, this);
+        this.verbose = config.verbose || false;
         if (!config.collisionInfo)
             throw new Error_1.ConfigurationError("Collision information must be specified for the system.");
         this.CollisionManager = new SpatialHashGrid_1.default(this, config.collisionInfo.cellSize || 12);
