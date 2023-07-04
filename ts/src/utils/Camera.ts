@@ -18,6 +18,9 @@ export default class Camera {
         this.position.y = position.y;
     };
 
+    /** Gets the system coordinates of a client MouseEvent. */
+    public getSystemCoordinates(clientCoordinates: VectorLike) {};
+
     constructor({position, zoom}: CameraConfig, system: System) {
         this.setCenter(position || new Vector(0, 0));
         this.zoom = (zoom || 1);

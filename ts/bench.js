@@ -27,19 +27,19 @@ function calculateRadius(width, height, centerX, centerY) {
 
 const sysRad = calculateRadius(1920, 1080, 1920 / 2, 1080 / 2);
 
-for (let i = 0; i < 1_000; i++) {
+for (let i = 0; i < 50_000; i++) {
     const x = Math.random() * ((sysRad - 2000) * 2) - (sysRad - 2000);
     const y = Math.random() * ((sysRad - 2000) * 2) - (sysRad - 2000);
 
     const radius = random(3, 13);
 
-    const entity = new Circle(
+    const entity = new Entity(
         {
             form: {
-                vertices: [new Vector(x, y)],
-                // sides: 5,
-                // radius,
-                // offset: { x, y }
+                // vertices: [new Vector(x, y)],
+                sides: 5,
+                radius,
+                offset: { x, y }
             },
             radius,
             mass: 10,

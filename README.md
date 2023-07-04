@@ -12,6 +12,7 @@ A blazingly fast, simple 2D physics engine for JavaScript and TypeScript, for bo
 - Fast Broadphase Collision Detection
 - Fast Collision Resolution
 - Collision Callbacks
+- Convex/Compound Shapes
 
 ## Installation
 

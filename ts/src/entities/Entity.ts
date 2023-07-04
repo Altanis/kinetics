@@ -5,6 +5,7 @@ import { ConfigurationError } from "../typings/Error";
 import { EntityRenderingConfig } from "../typings/Config";
 
 import Vector, { VectorLike } from "../utils/Vector";
+import { Circle } from "../Index";
   
 /** A representation of a geometric entity. */
 export default class Entity {
@@ -33,6 +34,11 @@ export default class Entity {
     public angularVelocity = 0;
     /** The angular speed of the entity. */
     public angularSpeed = 0;
+
+    /** The components of the entity. */
+    public components: Entity[] = [];
+    /** The parent of the entity (if it is a component.) */
+    public parent: Entity | null = null;
 
     /** The collision hooks of the entity. */
     public hooks: { 
@@ -146,32 +152,46 @@ export default class Entity {
 
     constructor(info: EntityConfig | CircleConfig, system: System) {
         this.info = info;
+        this.system = system;
+
         this.vertices = this.initializeVertices(info);
 
         this.bounds; // Initialize the bounds.
 
-        this.mass = Math.max(1, info.mass);
+        this.mass = info.mass;
         this.speed = info.speed;
         this.angularSpeed = info.angularSpeed || 0;
         this.elasticity = Math.max(0, info.elasticity) || 0;
         this.static = !!info.static;
 
-        if (!info.mass) console.warn("[SYSTEM]: Entity mass defaulted to 1 due to a zero quantity being provided.");
-        
+        if (!this.mass && this.mass !== 0) {
+            this.mass = 1;
+            console.warn("[SYSTEM]: Entity mass defaulted to 1 due to a zero quantity being provided.");
+        }
+
         this.configure(info.render || {});
         this.hooks = info.hooks || {};
 
-        this.system = system;
+        if (!system) throw new ConfigurationError("No system was provided for the entity.");
     }
 
     /** Initializes the vertices of the entity. */
     private initializeVertices(info: EntityConfig | CircleConfig) {
         if (!info.form) throw new ConfigurationError("No form was provided for the entity.");
-        if (!info.form.sides && !info.form.vertices) throw new ConfigurationError("No sides nor vertices were provided for the entity.");
 
         let returnedVertices: Vector[] = [];
 
-        if (info.form.vertices) returnedVertices = info.form.vertices;
+        if (info.form.components) {
+            for (const component of info.form.components) {
+                if (component.form.components) throw new ConfigurationError("Components cannot have components.");
+                /** @ts-ignore */
+                const entity = component.radius ? new Circle(component, this.system) : new Entity(component, this.system);
+                entity.parent = this;
+                this.components.push(entity);
+                returnedVertices.push(...entity.vertices);
+            }
+        }
+        else if (info.form.vertices) returnedVertices = info.form.vertices;
         else if (info.form.sides) {          
             const vertices: Vector[] = [];
             const radius = info.form.radius;
@@ -188,7 +208,7 @@ export default class Entity {
             };
 
             returnedVertices = vertices;  
-        } 
+        } else throw new ConfigurationError("No form was provided for the entity.");
                 
         return returnedVertices;
     };
@@ -280,8 +300,10 @@ export default class Entity {
         let stroke: Colors | string | undefined = undefined;
         let fill: Colors | string | undefined = undefined;
 
-        if (this.rendering.strokeColor) stroke = this.rendering.strokeColor;
-        if (this.rendering.fillColor) fill = this.rendering.fillColor;
+        const entity = this;
+
+        if (entity.rendering.strokeColor) stroke = entity.rendering.strokeColor;
+        if (entity.rendering.fillColor) fill = entity.rendering.fillColor;
 
         if (!stroke && !fill) stroke = Colors.Black;
 
@@ -302,9 +324,15 @@ export default class Entity {
         if (fill) context.fillStyle = fill;
         context.lineWidth = this.rendering.strokeWidth || 1;
 
-        for (const vertex of this.vertices) {
-            context.lineTo(vertex.x, -vertex.y);
-        };
+        if (this.components.length) {
+            for (const component of this.components) {
+                component.render(context);
+            };
+        } else {
+            for (const vertex of this.vertices) {
+                context.lineTo(vertex.x, -vertex.y);
+            };
+        }
 
         context.closePath();
 

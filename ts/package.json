@@ -5,7 +5,8 @@
   "main": "dist/Index.js",
   "scripts": {
     "build": "tsc -p .",
-    "start": "node dist/Index.js"
+    "start": "node dist/Index.js",
+    "debug": "nodemon --exec \"npx webpack\" --watch src --ext ts"
   },
   "keywords": ["physics", "engine", "typescript", "2d", "space", "kinetics", "kinetics.ts", "kineticsjs", "kinetics.js", "kinetics-js"],
   "author": "Altanis",

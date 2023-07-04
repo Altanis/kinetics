@@ -26,6 +26,9 @@ export interface EntityForm {
     // OPTION 2: Custom Polygon
     /** The vertices of the entity (or compounded entities) (in clockwise order). */
     vertices?: Vector[];
+     // OPTION 3: Components
+    /** The components of the entity. */
+    components?: (EntityConfig | CircleConfig)[];
 };
 
 /** Represents the information for a generic Entity. */

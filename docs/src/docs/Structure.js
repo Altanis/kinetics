@@ -372,6 +372,18 @@ export default [
                             },
                             {
                                 keyword: "public",
+                                name: "components",
+                                returnType: "Entity[]",
+                                description: "The entities that make up the entity.",
+                            },
+                            {
+                                keyword: "public",
+                                name: "parent",
+                                returnType: "Entity | null",
+                                description: "The parent of the entity. `null` for entities which aren't compound.",
+                            },
+                            {
+                                keyword: "public",
                                 name: "hooks",
                                 returnType: "{ preResolve: (entity: Entity) => void, postResolve: (entity: Entity) => void }",
                                 description: "The hooks for a collision between itself and another entity. `preResolve` is called before the entity collides, and `postResolve` is called after the entities collide.",
@@ -776,6 +788,20 @@ export default [
                                     }
                                 ]
                             },
+                            {
+                                keyword: "public",
+                                name: "getSystemCoordinates(clientCoordinates)",
+                                returnType: "Vector",
+                                description: "Gets the system coordinates mapped by the client coordinates.", 
+                                table: [
+                                    {
+                                        "Name": "clientCoordinates",
+                                        "Type": "VectorLike",
+                                        "Optional": "No",
+                                        "Description": "The client coordinates to map to system coordinates."
+                                    } 
+                                ]
+                            }
                         ]
                     }
                 ]
@@ -1447,6 +1473,13 @@ export default [
                                 name: "vertices",
                                 returnType: "Vector[]",
                                 description: "The vertices of the entity. This is unable to be used in conjunction with the other properties.",
+                            },
+
+                            {
+                                keyword: "public",
+                                name: "components",
+                                returnType: "(EntityConfig | CircleConfig)[]",
+                                description: "The components of the entity. This is unable to be used in conjunction with the other properties.",
                             }
                         ]
                     }

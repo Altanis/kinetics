@@ -158,7 +158,8 @@ export default class System extends EventEmitter {
             performance.memory?.usedJSHeapSize / 1024 / 1024 :
             process.memoryUsage().heapUsed / 1024 / 1024;
 
-        if (this.config.useRAF !== false) requestAnimationFrame(this.update.bind(this));
+        if (this.environment === Environment.Browser && this.config.useRAF !== false)
+            requestAnimationFrame(this.update.bind(this));
     };
 
     /** Adds an entity to the system. */
