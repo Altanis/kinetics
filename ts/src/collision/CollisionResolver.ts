@@ -8,6 +8,28 @@ import Vector from "../utils/Vector";
 export default class CollisionResolver {
     /** Detects collisions between two entities. */
     public detect(entity1: Entity, entity2: Entity) {
+        if (entity1.components.length && entity2.components.length) {
+            for (const component1 of entity1.components) {
+                for (const component2 of entity2.components) {
+                    const detected = this.detectSimple(component1, component2);
+                    if (detected) break;
+                }
+            }
+
+            return;
+        } else if (entity1.components.length || entity2.components.length) {
+            const component = entity1.components.length ? entity1 : entity2;
+            const notComponent = entity1.components.length ? entity2 : entity1;
+            
+            for (const subComponent of component.components) {
+                const detected = this.detectSimple(subComponent, notComponent);
+                if (detected) break;
+            }
+        } else this.detectSimple(entity1, entity2);
+    }
+
+    /** Detects collisions between two simple entities. */
+    public detectSimple(entity1: Entity, entity2: Entity): boolean {
         if (entity1.type === EntityType.Circle && entity2.type === EntityType.Circle) return this.detectCircleCircle(entity1 as Circle, entity2 as Circle);
         if (entity1.type === EntityType.Circle || entity2.type === EntityType.Circle) {
             const circle = entity1.type === EntityType.Circle ? entity1 : entity2;
@@ -41,7 +63,7 @@ export default class CollisionResolver {
             /** Calculate the overlap between the projections. */
             const overlapN = Math.min(maxA, maxB) - Math.max(minA, minB);
             
-            if (overlapN <= 0) return;
+            if (overlapN <= 0) return false;
             /** Determine the smallest overlap. */
             if (overlapN < overlap) {
                 smallestAxis = normal;
@@ -49,7 +71,17 @@ export default class CollisionResolver {
             }
         }
 
-        if (smallestAxis) this.resolve(entity1, entity2, Math.max(entity1.elasticity, entity2.elasticity), overlap, smallestAxis);
+        if (smallestAxis) {
+            this.resolve(
+                entity1.parent || entity1,
+                entity2.parent || entity2, 
+                Math.max(entity1.elasticity, entity2.elasticity),
+                overlap,
+                smallestAxis
+            );
+            
+            return true;
+        } else return false;
     };
 
     /** Detects collisions between a circle and a polygon. */
@@ -70,14 +102,24 @@ export default class CollisionResolver {
             const circleProjection = circle.position.dot(axis);
             const overlapN = Math.min(max, circleProjection + circle.radius) - Math.max(min, circleProjection - circle.radius);
 
-            if (overlapN <= 0) return;
+            if (overlapN <= 0) return false;
             if (overlapN < overlap) {
                 overlap = overlapN;
                 smallestAxis = axis;
             }
         }
 
-        if (smallestAxis) this.resolve(circle, polygon, Math.max(circle.elasticity, polygon.elasticity), overlap, smallestAxis);
+        if (smallestAxis) {
+            this.resolve(
+                circle.parent || circle,
+                polygon.parent || polygon, 
+                Math.max(circle.elasticity, polygon.elasticity), 
+                overlap, 
+                smallestAxis
+            );
+
+            return true;
+        } else return false;
     };
 
     /** Detects collisions between two circles. */
@@ -86,8 +128,18 @@ export default class CollisionResolver {
         const overlap = (circle1.radius + circle2.radius) - distance;
         const axis = circle1.position.clone.subtract(circle2.position).normalize();
 
-        if (overlap <= 0) return;
-        if (axis) this.resolve(circle1, circle2, Math.max(circle1.elasticity, circle2.elasticity), overlap, axis);
+        if (overlap <= 0) return false;
+        if (axis) {
+            this.resolve(
+                circle1.parent || circle1,
+                circle2.parent || circle2,
+                Math.max(circle1.elasticity, circle2.elasticity), 
+                overlap, 
+                axis
+            );
+
+            return true;
+        } else return false;
     };
 
     /** Projects the vertices onto the given axis. */

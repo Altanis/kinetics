@@ -214,7 +214,7 @@ class System extends EventEmitter_1.default {
             /** @ts-ignore */
             ((_a = performance.memory) === null || _a === void 0 ? void 0 : _a.usedJSHeapSize) / 1024 / 1024 :
             process.memoryUsage().heapUsed / 1024 / 1024;
-        if (this.config.useRAF !== false)
+        if (this.environment === Enums_1.Environment.Browser && this.config.useRAF !== false)
             requestAnimationFrame(this.update.bind(this));
     }
     ;
@@ -251,6 +251,30 @@ const Enums_1 = __webpack_require__(184);
 class CollisionResolver {
     /** Detects collisions between two entities. */
     detect(entity1, entity2) {
+        if (entity1.components.length && entity2.components.length) {
+            for (const component1 of entity1.components) {
+                for (const component2 of entity2.components) {
+                    const detected = this.detectSimple(component1, component2);
+                    if (detected)
+                        break;
+                }
+            }
+            return;
+        }
+        else if (entity1.components.length || entity2.components.length) {
+            const component = entity1.components.length ? entity1 : entity2;
+            const notComponent = entity1.components.length ? entity2 : entity1;
+            for (const subComponent of component.components) {
+                const detected = this.detectSimple(subComponent, notComponent);
+                if (detected)
+                    break;
+            }
+        }
+        else
+            this.detectSimple(entity1, entity2);
+    }
+    /** Detects collisions between two simple entities. */
+    detectSimple(entity1, entity2) {
         if (entity1.type === Enums_1.EntityType.Circle && entity2.type === Enums_1.EntityType.Circle)
             return this.detectCircleCircle(entity1, entity2);
         if (entity1.type === Enums_1.EntityType.Circle || entity2.type === Enums_1.EntityType.Circle) {
@@ -280,15 +304,19 @@ class CollisionResolver {
             /** Calculate the overlap between the projections. */
             const overlapN = Math.min(maxA, maxB) - Math.max(minA, minB);
             if (overlapN <= 0)
-                return;
+                return false;
             /** Determine the smallest overlap. */
             if (overlapN < overlap) {
                 smallestAxis = normal;
                 overlap = overlapN;
             }
         }
-        if (smallestAxis)
-            this.resolve(entity1, entity2, Math.max(entity1.elasticity, entity2.elasticity), overlap, smallestAxis);
+        if (smallestAxis) {
+            this.resolve(entity1.parent || entity1, entity2.parent || entity2, Math.max(entity1.elasticity, entity2.elasticity), overlap, smallestAxis);
+            return true;
+        }
+        else
+            return false;
     }
     ;
     /** Detects collisions between a circle and a polygon. */
@@ -306,14 +334,18 @@ class CollisionResolver {
             const circleProjection = circle.position.dot(axis);
             const overlapN = Math.min(max, circleProjection + circle.radius) - Math.max(min, circleProjection - circle.radius);
             if (overlapN <= 0)
-                return;
+                return false;
             if (overlapN < overlap) {
                 overlap = overlapN;
                 smallestAxis = axis;
             }
         }
-        if (smallestAxis)
-            this.resolve(circle, polygon, Math.max(circle.elasticity, polygon.elasticity), overlap, smallestAxis);
+        if (smallestAxis) {
+            this.resolve(circle.parent || circle, polygon.parent || polygon, Math.max(circle.elasticity, polygon.elasticity), overlap, smallestAxis);
+            return true;
+        }
+        else
+            return false;
     }
     ;
     /** Detects collisions between two circles. */
@@ -322,9 +354,13 @@ class CollisionResolver {
         const overlap = (circle1.radius + circle2.radius) - distance;
         const axis = circle1.position.clone.subtract(circle2.position).normalize();
         if (overlap <= 0)
-            return;
-        if (axis)
-            this.resolve(circle1, circle2, Math.max(circle1.elasticity, circle2.elasticity), overlap, axis);
+            return false;
+        if (axis) {
+            this.resolve(circle1.parent || circle1, circle2.parent || circle2, Math.max(circle1.elasticity, circle2.elasticity), overlap, axis);
+            return true;
+        }
+        else
+            return false;
     }
     ;
     /** Projects the vertices onto the given axis. */
@@ -465,6 +501,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const Enums_1 = __webpack_require__(184);
 const Error_1 = __webpack_require__(2);
 const Vector_1 = __importDefault(__webpack_require__(91));
+const Index_1 = __webpack_require__(296);
 /** A representation of a geometric entity. */
 class Entity {
     /** The hitbox of the entity. */
@@ -559,31 +596,48 @@ class Entity {
         this.angularVelocity = 0;
         /** The angular speed of the entity. */
         this.angularSpeed = 0;
+        /** The components of the entity. */
+        this.components = [];
+        /** The parent of the entity (if it is a component.) */
+        this.parent = null;
         /** The collision hooks of the entity. */
         this.hooks = {};
         this._angle = 0;
         this.info = info;
+        this.system = system;
         this.vertices = this.initializeVertices(info);
         this.bounds; // Initialize the bounds.
-        this.mass = Math.max(1, info.mass);
+        this.mass = info.mass;
         this.speed = info.speed;
         this.angularSpeed = info.angularSpeed || 0;
         this.elasticity = Math.max(0, info.elasticity) || 0;
         this.static = !!info.static;
-        if (!info.mass)
+        if (!this.mass && this.mass !== 0) {
+            this.mass = 1;
             console.warn("[SYSTEM]: Entity mass defaulted to 1 due to a zero quantity being provided.");
+        }
         this.configure(info.render || {});
         this.hooks = info.hooks || {};
-        this.system = system;
+        if (!system)
+            throw new Error_1.ConfigurationError("No system was provided for the entity.");
     }
     /** Initializes the vertices of the entity. */
     initializeVertices(info) {
         if (!info.form)
             throw new Error_1.ConfigurationError("No form was provided for the entity.");
-        if (!info.form.sides && !info.form.vertices)
-            throw new Error_1.ConfigurationError("No sides nor vertices were provided for the entity.");
         let returnedVertices = [];
-        if (info.form.vertices)
+        if (info.form.components) {
+            for (const component of info.form.components) {
+                if (component.form.components)
+                    throw new Error_1.ConfigurationError("Components cannot have components.");
+                /** @ts-ignore */
+                const entity = component.radius ? new Index_1.Circle(component, this.system) : new Entity(component, this.system);
+                entity.parent = this;
+                this.components.push(entity);
+                returnedVertices.push(...entity.vertices);
+            }
+        }
+        else if (info.form.vertices)
             returnedVertices = info.form.vertices;
         else if (info.form.sides) {
             const vertices = [];
@@ -598,6 +652,8 @@ class Entity {
             ;
             returnedVertices = vertices;
         }
+        else
+            throw new Error_1.ConfigurationError("No form was provided for the entity.");
         return returnedVertices;
     }
     ;
@@ -703,10 +759,11 @@ class Entity {
     determineColors() {
         let stroke = undefined;
         let fill = undefined;
-        if (this.rendering.strokeColor)
-            stroke = this.rendering.strokeColor;
-        if (this.rendering.fillColor)
-            fill = this.rendering.fillColor;
+        const entity = this;
+        if (entity.rendering.strokeColor)
+            stroke = entity.rendering.strokeColor;
+        if (entity.rendering.fillColor)
+            fill = entity.rendering.fillColor;
         if (!stroke && !fill)
             stroke = Enums_1.Colors.Black;
         return { stroke, fill };
@@ -725,10 +782,18 @@ class Entity {
         if (fill)
             context.fillStyle = fill;
         context.lineWidth = this.rendering.strokeWidth || 1;
-        for (const vertex of this.vertices) {
-            context.lineTo(vertex.x, -vertex.y);
+        if (this.components.length) {
+            for (const component of this.components) {
+                component.render(context);
+            }
+            ;
         }
-        ;
+        else {
+            for (const vertex of this.vertices) {
+                context.lineTo(vertex.x, -vertex.y);
+            }
+            ;
+        }
         context.closePath();
         if (fill)
             context.fill();
@@ -919,6 +984,9 @@ class Camera {
         this.position.x = position.x;
         this.position.y = position.y;
     }
+    ;
+    /** Gets the system coordinates of a client MouseEvent. */
+    getSystemCoordinates(clientCoordinates) { }
     ;
     constructor({ position, zoom }, system) {
         /** The position the camera is centered at. */

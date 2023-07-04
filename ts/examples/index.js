@@ -203,29 +203,83 @@ const opts = {
 // const starEntity = new Entity({
 //     form: { vertices: star, },
 //     ...opts,
-// }, system);
+// }, system);jus
 // const heartEntity = new Entity({
 //     vertices: heart,
 //     ...opts,
 // }, system);
-const amongUsShape = [
-    [0, 40],
-    [10, 30],
-    [20, 30],
-    [30, 40],
-    [20, 50],
-    [10, 50] // Vertex 6
-].map(([x, y]) => new Vector(x, y));
+// const amongUsShape = [
+//     [0, 40],
+//     [10, 30],
+//     [20, 30],
+//     [30, 40],
+//     [20, 50],
+//     [10, 50] // Vertex 6
+// ].map(([x, y]) => new Vector(x, y));
 // system.addEntity(compound);
 // const amongUs = new Entity({
 //     vertices: amongUsShape,
 //     ...opts,
 // }, system);
+
+const car = new Entity({
+    form: {
+        components: [
+            {
+                form: {
+                    vertices: [
+                        new Vector(0, 0),
+                        new Vector(0, 200),
+                        new Vector(200, 200),
+                        new Vector(200, 0),
+                    ],
+                },
+                speed: 10,
+                elasticity: 1,
+                angularSpeed: 1,
+                mass: 1,
+                render: {
+                    strokeColor: Colors.Red,
+                }
+            },
+            {
+                form: {
+                    vertices: [new Vector(50, -20)]
+                },
+                radius: 20,
+                speed: 10,
+                elasticity: 1,
+                angularSpeed: 1,
+                mass: 1,
+                render: {
+                    strokeColor: Colors.Green,
+                }
+            },
+            {
+                form: {
+                    vertices: [new Vector(150, -20)]
+                },
+                radius: 20,
+                speed: 10,
+                elasticity: 1,
+                angularSpeed: 1,
+                mass: 1,
+                render: {
+                    strokeColor: Colors.Green,
+                }
+            }
+        ]
+    },
+    ...opts,
+}, system);
+system.addEntity(car);
+
+
 for (let i = 0; i < 0; i++) {
     const ent2 = new Circle(Object.assign({ form: { vertices: [new Vector(1000 * Math.random(), 1000 * Math.random())] }, radius: 50 }, opts), system);
     // system.addEntity(ent2);
 }
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < 10; i++) {
     const isCircle = Math.random() < 0.5;
     /** random x & y coordinates which can be negative (given system.radius) */
     let x = i === 0 ? 0 : Math.random() * ((sysRad - 2000) * 2) - (sysRad - 2000);
@@ -327,6 +381,7 @@ for (let i = 0; i < 100; i++) {
     }
 }
 ;
+
 /** @ts-ignore */
 const keys = window.keys = new Set();
 document.addEventListener("keydown", function ({ key, code }) {
@@ -389,7 +444,7 @@ document.addEventListener("keyup", function ({ key, code }) {
             break;
     }
 });
-document.addEventListener("click", function ({ clientX, clientY }) {
+document.addEventListener("click", function (event) {
     // todo: map (clientX, clientY) -> (systemX, systemY)
 });
 document.addEventListener("wheel", function ({ deltaY }) {
