@@ -24,7 +24,7 @@ npm install kinetics.ts
 For a vanilla HTML/CSS/JS project, use the following script tag:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/Altanis/kinetics/ts/build/kinetics.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/Altanis/kinetics.ts@master/ts/build/kinetics.min.js" defer></script>
 ```
 
 and all of the engine's classes will be available under the `Kinetics` namespace (`window.Kinetics.System`, `window.Kinetics.Entity`, etc.).
