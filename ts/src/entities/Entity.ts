@@ -11,6 +11,15 @@ import { Circle } from "../Index";
 export default class Entity {
     /** The raw information of the entity. */
     protected info: EntityConfig | CircleConfig;
+
+    /** The number of ticks elapsed since the entity's spawn. */
+    public tick = 0;
+    /** The last tick the entity has collided with another. */
+    public lastCollisionFrame = 0;
+
+    /** The threshold for the linear and angular velocities to put the entity to sleep. */
+    private sleepThreshold = -1;
+
     /** The geometric type of the entity. */
     public type: EntityType = EntityType.Polygon;
 
@@ -47,6 +56,16 @@ export default class Entity {
         /** The hooks to run after resolving collisions. */
         postResolve?: (entity: Entity) => void;
     } = {};
+
+    /** Whether or not the entity is sleeping. */
+    public get sleeping() {
+        return (
+            this.tick - this.lastCollisionFrame > 5 &&
+            Math.abs(this.velocity.x) < this.sleepThreshold &&
+            Math.abs(this.velocity.y) < this.sleepThreshold &&
+            Math.abs(this.angularVelocity) < this.sleepThreshold
+        );
+    };
 
     /** The hitbox of the entity. */
     public get hitbox() { return this.bounds.dimensions; };
@@ -163,6 +182,7 @@ export default class Entity {
         this.angularSpeed = info.angularSpeed || 0;
         this.elasticity = Math.max(0, info.elasticity) || 0;
         this.static = !!info.static;
+        this.sleepThreshold = info.sleepThreshold === undefined ? -1 : info.sleepThreshold;
 
         if (!this.mass && this.mass !== 0) {
             this.mass = 1;
@@ -263,6 +283,8 @@ export default class Entity {
             this.velocity.y -= this.system.gravity;
         }
 
+        // if (this.sleeping) return;
+
         this.velocity.scale(1 - this.system.friction); // Apply friction.
         this.angularVelocity *= 1 - this.system.friction; // Apply friction.
 
@@ -271,6 +293,7 @@ export default class Entity {
 
         this.acceleration.scale(0); // Reset acceleration.
         
+        this.tick++;
         this.system.emit("entityUpdate", this);
     };
 

@@ -38,70 +38,24 @@ export default class SpatialHashGrid implements CollisionManager {
 
     /* Queries the grid by iterating over every cell and performing narrowphase detection on each entity. */
     public query() {      
-        // iterate over each map
-        this.cells.forEach(cell => {
+        for (const cell of this.cells.values()) {
             const length = cell.length;
-            if (length < 2) return;
+            if (length < 2) continue;
 
             for (let i = 0; i < length; i++) {
                 for (let j = i + 1; j < length; j++) {
-                    /** @ts-ignore */
                     const entity1 = this.system.entities[cell[i]]!;
-                    /** @ts-ignore */
                     const entity2 = this.system.entities[cell[j]]!;
 
+                    if (entity1.sleeping && entity2.sleeping) continue;
                     this.system.CollisionResolver.detect(entity1, entity2);   
                 }
             }
-        });
-
-        // for (const key in this.cells) {
-        //     const cell = this.cells.get(key);
-        //     const length = cell.length;
-
-        //     if (length < 2) continue;
-
-        //     for (let j = 0; j < length; j++) {
-        //         for (let k = j + 1; k < length; k++) {
-        //             const entity1 = this.system.entities[cell[j]]!;
-        //             const entity2 = this.system.entities[cell[k]]!;
-
-        //             this.system.CollisionResolver.detect(entity1, entity2);
-        //         }
-        //     }
-        // }
+        }
     }
 
     /** Clears the grid. */
     public clear() {
         this.cells.clear();
     };
-
-    // public query() {
-    //     console.time();
-    //     for (let i = this.hashBucketSize; i--;) {
-    //         const cell = this.cells[i];
-
-    //         const length = cell.length;
-
-    //         for (let j = 0; j < length; j++) {
-    //             for (let k = j + 1; k < length; k++) {
-    //                 const id1 = cell[j];
-    //                 const id2 = cell[k];
-                    
-    //                 const entity1 = id1 > id2 ? this.system.entities[id1]! : this.system.entities[id2]!;
-    //                 const entity2 = id1 > id2 ? this.system.entities[id2]! : this.system.entities[id1]!;
-
-    //                 this.system.CollisionResolver.detect(entity1, entity2);
-    //             }
-    //         }
-    //     }
-    //     console.timeEnd();
-    // };
-
-    // public clear() {
-    //     for (let i = this.hashBucketSize; i--;) {
-    //         this.cells[i].length = 0;
-    //     }
-    // }
 };

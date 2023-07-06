@@ -279,8 +279,8 @@ for (let i = 0; i < 0; i++) {
     const ent2 = new Circle(Object.assign({ form: { vertices: [new Vector(1000 * Math.random(), 1000 * Math.random())] }, radius: 50 }, opts), system);
     // system.addEntity(ent2);
 }
-for (let i = 0; i < 10; i++) {
-    const isCircle = Math.random() < 0.5;
+for (let i = 0; i < 100; i++) {
+    const isCircle = Math.random() >= 1;
     /** random x & y coordinates which can be negative (given system.radius) */
     let x = i === 0 ? 0 : Math.random() * ((sysRad - 2000) * 2) - (sysRad - 2000);
     const y = i === 0 ? 0 : Math.random() * ((sysRad - 2000) * 2) - (sysRad - 2000);
@@ -350,8 +350,7 @@ for (let i = 0; i < 10; i++) {
             mass: 10,
             speed: 1,
             elasticity: 1,
-            angularSpeed: 1,
-            rotate: true,
+            angularSpeed: 0.01,
             render: {
                 // fillColor: entColor,
                 strokeColor: entColor,

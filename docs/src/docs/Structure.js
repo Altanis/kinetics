@@ -306,6 +306,18 @@ export default [
                         data: [
                             {
                                 keyword: "public",
+                                name: "tick",
+                                returnType: "number",
+                                description: "The amount of ticks elapsed since entity has spawned.",
+                            },
+                            {
+                                keyword: "public",
+                                name: "lastCollisionFrame",
+                                returnType: "number",
+                                description: "The last tick the entity collided with another entity.",
+                            },
+                            {
+                                keyword: "public",
                                 name: "type",
                                 returnType: "EntityType",
                             },
@@ -387,6 +399,12 @@ export default [
                                 name: "hooks",
                                 returnType: "{ preResolve: (entity: Entity) => void, postResolve: (entity: Entity) => void }",
                                 description: "The hooks for a collision between itself and another entity. `preResolve` is called before the entity collides, and `postResolve` is called after the entities collide.",
+                            },
+                            {
+                                keyword: "public",
+                                name: "sleeping",
+                                returnType: "boolean",
+                                description: "Whether or not the entity is sleeping. <nerd>Sleeping is a state where the entity is not updating, and is not being checked for collisions. It is determined by both linear and angular velocities being less than the `sleepThreshold` provided in the entity config, as well as 5+ ticks elapsing since the last collision.</nerd>",
                             },
                             {
                                 keyword: "public",
@@ -1299,7 +1317,7 @@ export default [
                                 name: "useRAF",
                                 returnType: "boolean",
                                 defaultsTo: "true",
-                                description: "Whether or not the system should use `requestAnimationFram`e`.",
+                                description: "Whether or not the system should use `requestAnimationFrame`.",
                             },
                             {
                                 keyword: "public",
@@ -1412,6 +1430,13 @@ export default [
                                 returnType: "boolean",
                                 defaultsTo: "true",
                                 description: "Whether or not the entity should rotate.",
+                            },
+                            {
+                                keyword: "public",
+                                name: "sleepThreshold",
+                                returnType: "number",
+                                defaultsTo: "-1",
+                                description: "The value both the linear and angular velocity of this entity must be below to qualify for sleeping. If not provided, the entity will never go to sleep.",
                             },
                             {
                                 keyword: "public",

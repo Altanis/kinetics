@@ -10,7 +10,7 @@ const system = new System({
     camera: {
         zoom: 1,
     },
-    bounds: new Vector(1920, 1080)
+    bounds: new Vector(10_000, 10_000)
 });
 
 function random(min, max) {
@@ -25,7 +25,8 @@ function calculateRadius(width, height, centerX, centerY) {
     return radius;
 };
 
-const sysRad = calculateRadius(1920, 1080, 1920 / 2, 1080 / 2);
+// const sysRad = calculateRadius(1920, 1080, 1920 / 2, 1080 / 2);
+const sysRad = calculateRadius(10_000, 10_000, 10_000 / 2, 10_000 / 2);
 
 for (let i = 0; i < 50_000; i++) {
     const x = Math.random() * ((sysRad - 2000) * 2) - (sysRad - 2000);
@@ -47,6 +48,7 @@ for (let i = 0; i < 50_000; i++) {
             rotate: false,
             elasticity: 1,
             angularSpeed: 1,
+            // sleepThreshold: 1E-6
         },
         system
     );

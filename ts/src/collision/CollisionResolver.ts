@@ -79,6 +79,9 @@ export default class CollisionResolver {
                 overlap,
                 smallestAxis
             );
+
+            entity1.lastCollisionFrame = entity1.tick;
+            entity2.lastCollisionFrame = entity2.tick;
             
             return true;
         } else return false;
@@ -118,6 +121,9 @@ export default class CollisionResolver {
                 smallestAxis
             );
 
+            circle.lastCollisionFrame = circle.tick;
+            polygon.lastCollisionFrame = polygon.tick;
+
             return true;
         } else return false;
     };
@@ -137,6 +143,9 @@ export default class CollisionResolver {
                 overlap, 
                 axis
             );
+
+            circle1.lastCollisionFrame = circle1.tick;
+            circle2.lastCollisionFrame = circle2.tick;
 
             return true;
         } else return false;

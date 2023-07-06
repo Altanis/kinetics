@@ -313,6 +313,8 @@ class CollisionResolver {
         }
         if (smallestAxis) {
             this.resolve(entity1.parent || entity1, entity2.parent || entity2, Math.max(entity1.elasticity, entity2.elasticity), overlap, smallestAxis);
+            entity1.lastCollisionFrame = entity1.tick;
+            entity2.lastCollisionFrame = entity2.tick;
             return true;
         }
         else
@@ -342,6 +344,8 @@ class CollisionResolver {
         }
         if (smallestAxis) {
             this.resolve(circle.parent || circle, polygon.parent || polygon, Math.max(circle.elasticity, polygon.elasticity), overlap, smallestAxis);
+            circle.lastCollisionFrame = circle.tick;
+            polygon.lastCollisionFrame = polygon.tick;
             return true;
         }
         else
@@ -357,6 +361,8 @@ class CollisionResolver {
             return false;
         if (axis) {
             this.resolve(circle1.parent || circle1, circle2.parent || circle2, Math.max(circle1.elasticity, circle2.elasticity), overlap, axis);
+            circle1.lastCollisionFrame = circle1.tick;
+            circle2.lastCollisionFrame = circle2.tick;
             return true;
         }
         else
@@ -451,20 +457,31 @@ class SpatialHashGrid {
     /* Queries the grid by iterating over every cell and performing narrowphase detection on each entity. */
     query() {
         // iterate over each map
-        this.cells.forEach(cell => {
+        // this.cells.forEach(cell => {
+        //     const length = cell.length;
+        //     if (length < 2) return;
+        //     for (let i = 0; i < length; i++) {
+        //         for (let j = i + 1; j < length; j++) {
+        //             const entity1 = this.system.entities[cell[i]]!;
+        //             const entity2 = this.system.entities[cell[j]]!;
+        //             if (entity1.sleeping && entity2.sleeping) continue;
+        //             this.system.CollisionResolver.detect(entity1, entity2);   
+        //         }
+        //     }
+        // });
+        for (const cell of this.cells.values()) {
             const length = cell.length;
             if (length < 2)
-                return;
+                continue;
             for (let i = 0; i < length; i++) {
                 for (let j = i + 1; j < length; j++) {
-                    /** @ts-ignore */
                     const entity1 = this.system.entities[cell[i]];
-                    /** @ts-ignore */
                     const entity2 = this.system.entities[cell[j]];
+                    // if (entity1.sleeping && entity2.sleeping) continue;
                     this.system.CollisionResolver.detect(entity1, entity2);
                 }
             }
-        });
+        }
         // for (const key in this.cells) {
         //     const cell = this.cells.get(key);
         //     const length = cell.length;
@@ -504,6 +521,14 @@ const Vector_1 = __importDefault(__webpack_require__(91));
 const Index_1 = __webpack_require__(296);
 /** A representation of a geometric entity. */
 class Entity {
+    /** Whether or not the entity is sleeping. */
+    get sleeping() {
+        return (this.tick - this.lastCollisionFrame > 5 &&
+            Math.abs(this.velocity.x) < 1E-12 &&
+            Math.abs(this.velocity.y) < 1E-12 &&
+            Math.abs(this.angularVelocity) < 1E-12);
+    }
+    ;
     /** The hitbox of the entity. */
     get hitbox() { return this.bounds.dimensions; }
     ;
@@ -586,6 +611,10 @@ class Entity {
     }
     ;
     constructor(info, system) {
+        /** The number of ticks elapsed since the entity's spawn. */
+        this.tick = 0;
+        /** The last tick the entity has collided with another. */
+        this.lastCollisionFrame = 0;
         /** The geometric type of the entity. */
         this.type = Enums_1.EntityType.Polygon;
         /** The velocity of the entity. */
@@ -724,11 +753,13 @@ class Entity {
         if (this.system.gravity && !this.static) {
             this.velocity.y -= this.system.gravity;
         }
+        // if (this.sleeping) return;
         this.velocity.scale(1 - this.system.friction); // Apply friction.
         this.angularVelocity *= 1 - this.system.friction; // Apply friction.
         this.updatePosition(this.velocity); // Apply velocity.
         this.angle += this.angularVelocity / 100; // Apply angular velocity.
         this.acceleration.scale(0); // Reset acceleration.
+        this.tick++;
         this.system.emit("entityUpdate", this);
     }
     ;

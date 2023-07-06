@@ -48,6 +48,8 @@ export interface EntityConfig {
     angularSpeed?: number;
     /** Whether or not the entity should be able to rotate. Defaults to `true`. */
     rotate?: boolean;
+    /** The threshold for the linear and angular velocities to put the entity to sleep. */
+    sleepThreshold?: number;
 
     /** Rendering options for the entity. */
     render?: EntityRenderingConfig;
