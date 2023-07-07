@@ -57,7 +57,7 @@ export default class Vector implements VectorLike {
     }
 
     /** Gets the distance from another vector. */
-    public distance(vector: Vector): number {
+    public distance(vector: VectorLike): number {
         return this.clone.subtract(vector).magnitude;
     }
 
@@ -88,18 +88,15 @@ export default class Vector implements VectorLike {
     }
 
     /** Rotates the angle to a new angle. */
-    public set direction(angle: number) {
+    public rotate(angle: number) {
         const magnitude = this.magnitude;
 
         this.x = magnitude * Math.cos(angle);
         this.y = magnitude * Math.sin(angle);
+
+        return this;
     }
     
-    /** Gets the squared magnitude of the vector. */
-    public get magnitudeSq(): number {
-        return this.x * this.x + this.y * this.y;
-    };
-
     /** Gets the magnitude (length) of the vector. */
     public get magnitude(): number {
         return Math.sqrt(this.magnitudeSq);
@@ -111,6 +108,11 @@ export default class Vector implements VectorLike {
 
         this.x = magnitude * Math.cos(angle);
         this.y = magnitude * Math.sin(angle);
+    };
+
+    /** Gets the squared magnitude of the vector. */
+    public get magnitudeSq(): number {
+        return this.x * this.x + this.y * this.y;
     };
 
     /** Clones the vector. */
