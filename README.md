@@ -12,7 +12,6 @@ A blazingly fast, simple 2D physics engine for JavaScript and TypeScript, for bo
 - Fast Broadphase Collision Detection
 - Fast Collision Resolution
 - Collision Callbacks
-- Convex/Compound Shapes
 
 ## Installation
 
@@ -25,7 +24,7 @@ npm install kinetics.ts
 For a vanilla HTML/CSS/JS project, use the following script tag:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/Altanis/kinetics.ts@master/ts/build/kinetics.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/Altanis/kinetics-ts/build/kinetics.min.js" defer></script>
 ```
 
 and all of the engine's classes will be available under the `Kinetics` namespace (`window.Kinetics.System`, `window.Kinetics.Entity`, etc.).
@@ -43,6 +42,3 @@ System Specifications:
 <img width="870" alt="image" src="https://github.com/Altanis/kinetics-ts/blob/main/img/bench.png?raw=true">
 
 The benchmarks provide evidence of the engine's exceptional speed and performance in comparison to other alternatives.
-
-
-A C++ variant of this engine is underway as well, but may take some time.
