@@ -68,7 +68,7 @@ export default class Entity {
     };
 
     /** The hitbox of the entity. */
-    public get hitbox() { return this.bounds.dimensions; };
+    public get hitbox() { return this.bounds.max.subtract(this.bounds.min); };
 
     /** The moment of inertia of the entity. */
     public get inertia() {
@@ -113,8 +113,7 @@ export default class Entity {
             
             this.vertices[i].x = rotatedX + this.position.x;
             this.vertices[i].y = rotatedY + this.position.y;            
-        }
-
+        } 
     };
 
     /** The unique identifier for the entity. */
@@ -127,30 +126,21 @@ export default class Entity {
     public get bounds() {
         let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
 
-        if (this.position === undefined) {
-            for (const vertex of this.vertices) {
-                minX = Math.min(minX, vertex.x);
-                maxX = Math.max(maxX, vertex.x);
-                minY = Math.min(minY, vertex.y);
-                maxY = Math.max(maxY, vertex.y);
-            };
-
-            this.position = new Vector((minX + maxX) / 2, (minY + maxY) / 2);
-        } else {
-            for (let vertex of this.vertices) {    
-                minX = Math.min(minX, vertex.x);
-                maxX = Math.max(maxX, vertex.x);
-                minY = Math.min(minY, vertex.y);
-                maxY = Math.max(maxY, vertex.y);
-            };
+        for (const vertex of this.vertices) {
+            const x = vertex.x;
+            const y = vertex.y;
+            
+            minX = minX > x ? x : minX;
+            minY = minY > y ? y : minY;
+            maxX = maxX < x ? x : maxX;
+            maxY = maxY < y ? y : maxY;
         };
         
-        const dimensions = new Vector((maxX - minX), (maxY - minY));
-
+        if (this.position === undefined) this.position = new Vector((minX + maxX) / 2, (minY + maxY) / 2);
+        
         return {
             min: new Vector(minX, minY),
             max: new Vector(maxX, maxY),
-            dimensions
         };
     };
     
@@ -183,6 +173,7 @@ export default class Entity {
         this.elasticity = Math.max(0, info.elasticity) || 0;
         this.static = !!info.static;
         this.sleepThreshold = info.sleepThreshold === undefined ? -1 : info.sleepThreshold;
+
 
         if (!this.mass && this.mass !== 0) {
             this.mass = 1;

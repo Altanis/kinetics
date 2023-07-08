@@ -456,19 +456,6 @@ class SpatialHashGrid {
     }
     /* Queries the grid by iterating over every cell and performing narrowphase detection on each entity. */
     query() {
-        // iterate over each map
-        // this.cells.forEach(cell => {
-        //     const length = cell.length;
-        //     if (length < 2) return;
-        //     for (let i = 0; i < length; i++) {
-        //         for (let j = i + 1; j < length; j++) {
-        //             const entity1 = this.system.entities[cell[i]]!;
-        //             const entity2 = this.system.entities[cell[j]]!;
-        //             if (entity1.sleeping && entity2.sleeping) continue;
-        //             this.system.CollisionResolver.detect(entity1, entity2);   
-        //         }
-        //     }
-        // });
         for (const cell of this.cells.values()) {
             const length = cell.length;
             if (length < 2)
@@ -477,23 +464,12 @@ class SpatialHashGrid {
                 for (let j = i + 1; j < length; j++) {
                     const entity1 = this.system.entities[cell[i]];
                     const entity2 = this.system.entities[cell[j]];
-                    // if (entity1.sleeping && entity2.sleeping) continue;
+                    if (entity1.sleeping && entity2.sleeping)
+                        continue;
                     this.system.CollisionResolver.detect(entity1, entity2);
                 }
             }
         }
-        // for (const key in this.cells) {
-        //     const cell = this.cells.get(key);
-        //     const length = cell.length;
-        //     if (length < 2) continue;
-        //     for (let j = 0; j < length; j++) {
-        //         for (let k = j + 1; k < length; k++) {
-        //             const entity1 = this.system.entities[cell[j]]!;
-        //             const entity2 = this.system.entities[cell[k]]!;
-        //             this.system.CollisionResolver.detect(entity1, entity2);
-        //         }
-        //     }
-        // }
     }
     /** Clears the grid. */
     clear() {
@@ -524,9 +500,9 @@ class Entity {
     /** Whether or not the entity is sleeping. */
     get sleeping() {
         return (this.tick - this.lastCollisionFrame > 5 &&
-            Math.abs(this.velocity.x) < 1E-12 &&
-            Math.abs(this.velocity.y) < 1E-12 &&
-            Math.abs(this.angularVelocity) < 1E-12);
+            Math.abs(this.velocity.x) < this.sleepThreshold &&
+            Math.abs(this.velocity.y) < this.sleepThreshold &&
+            Math.abs(this.angularVelocity) < this.sleepThreshold);
     }
     ;
     /** The hitbox of the entity. */
@@ -615,6 +591,8 @@ class Entity {
         this.tick = 0;
         /** The last tick the entity has collided with another. */
         this.lastCollisionFrame = 0;
+        /** The threshold for the linear and angular velocities to put the entity to sleep. */
+        this.sleepThreshold = -1;
         /** The geometric type of the entity. */
         this.type = Enums_1.EntityType.Polygon;
         /** The velocity of the entity. */
@@ -641,6 +619,7 @@ class Entity {
         this.angularSpeed = info.angularSpeed || 0;
         this.elasticity = Math.max(0, info.elasticity) || 0;
         this.static = !!info.static;
+        this.sleepThreshold = info.sleepThreshold === undefined ? -1 : info.sleepThreshold;
         if (!this.mass && this.mass !== 0) {
             this.mass = 1;
             console.warn("[SYSTEM]: Entity mass defaulted to 1 due to a zero quantity being provided.");
@@ -1225,16 +1204,12 @@ class Vector {
         return Math.atan2(this.y - reference.y, this.x - reference.x);
     }
     /** Rotates the angle to a new angle. */
-    set direction(angle) {
+    rotate(angle) {
         const magnitude = this.magnitude;
         this.x = magnitude * Math.cos(angle);
         this.y = magnitude * Math.sin(angle);
+        return this;
     }
-    /** Gets the squared magnitude of the vector. */
-    get magnitudeSq() {
-        return this.x * this.x + this.y * this.y;
-    }
-    ;
     /** Gets the magnitude (length) of the vector. */
     get magnitude() {
         return Math.sqrt(this.magnitudeSq);
@@ -1245,6 +1220,11 @@ class Vector {
         const angle = this.angle();
         this.x = magnitude * Math.cos(angle);
         this.y = magnitude * Math.sin(angle);
+    }
+    ;
+    /** Gets the squared magnitude of the vector. */
+    get magnitudeSq() {
+        return this.x * this.x + this.y * this.y;
     }
     ;
     /** Clones the vector. */

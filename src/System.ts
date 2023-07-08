@@ -145,7 +145,7 @@ export default class System extends EventEmitter {
         for (const entity of this.entities) {
             if (!entity) return;
 
-            this.CollisionManager.insert(entity.bounds.min.x, entity.bounds.min.y, entity.bounds.dimensions.x, entity.bounds.dimensions.y, entity.id);
+            this.CollisionManager.insert(entity.bounds.min.x, entity.bounds.min.y, entity.hitbox.x, entity.hitbox.y, entity.id);
             entity.update();
         };
         this.CollisionManager.query();

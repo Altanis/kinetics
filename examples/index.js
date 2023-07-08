@@ -272,21 +272,21 @@ const car = new Entity({
     },
     ...opts,
 }, system);
-system.addEntity(car);
+// system.addEntity(car);
 
 
 for (let i = 0; i < 0; i++) {
     const ent2 = new Circle(Object.assign({ form: { vertices: [new Vector(1000 * Math.random(), 1000 * Math.random())] }, radius: 50 }, opts), system);
     // system.addEntity(ent2);
 }
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < 2; i++) {
     const isCircle = Math.random() >= 1;
     /** random x & y coordinates which can be negative (given system.radius) */
     let x = i === 0 ? 0 : Math.random() * ((sysRad - 2000) * 2) - (sysRad - 2000);
     const y = i === 0 ? 0 : Math.random() * ((sysRad - 2000) * 2) - (sysRad - 2000);
     // if (x == 0) x = -100;
     // if (x > 0) x = -x - 100;
-    const sides = Math.floor(Math.random() * 10) + 3;
+    const sides = i == 0 ? 3 : 4
     // const sides = 4;
     const radius = 50;
     const color = [
