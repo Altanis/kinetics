@@ -1,6 +1,6 @@
 {
   "name": "kinetics.ts",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "A TypeScript physics engine for 2D Space.",
   "main": "dist/Index.js",
   "scripts": {
