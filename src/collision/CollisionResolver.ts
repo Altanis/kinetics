@@ -189,7 +189,7 @@ export default class CollisionResolver {
 
         /** Change the angular velocity of the entities. */
         if (!entity1.static && !entity2.static) {
-            entity1.angularVelocity += (1 / entity1.inertia) * entity1.position.clone.subtract(entity2.position).cross(impulseVector);
+            entity1.angularVelocity -= (1 / entity1.inertia) * entity1.position.clone.subtract(entity2.position).cross(impulseVector);
             entity2.angularVelocity -= (1 / entity2.inertia) * entity1.position.clone.subtract(entity2.position).cross(impulseVector);
         }
         

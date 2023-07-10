@@ -203,7 +203,7 @@ class System extends EventEmitter_1.default {
         for (const entity of this.entities) {
             if (!entity)
                 return;
-            this.CollisionManager.insert(entity.bounds.min.x, entity.bounds.min.y, entity.bounds.dimensions.x, entity.bounds.dimensions.y, entity.id);
+            this.CollisionManager.insert(entity.bounds.min.x, entity.bounds.min.y, entity.hitbox.x, entity.hitbox.y, entity.id);
             entity.update();
         }
         ;
@@ -403,7 +403,7 @@ class CollisionResolver {
             entity2.velocity.subtract(impulseVector.clone.scale(1 / mass2));
         /** Change the angular velocity of the entities. */
         if (!entity1.static && !entity2.static) {
-            entity1.angularVelocity += (1 / entity1.inertia) * entity1.position.clone.subtract(entity2.position).cross(impulseVector);
+            entity1.angularVelocity -= (1 / entity1.inertia) * entity1.position.clone.subtract(entity2.position).cross(impulseVector);
             entity2.angularVelocity -= (1 / entity2.inertia) * entity1.position.clone.subtract(entity2.position).cross(impulseVector);
         }
         /** Move the entities out of each other. */
@@ -506,7 +506,7 @@ class Entity {
     }
     ;
     /** The hitbox of the entity. */
-    get hitbox() { return this.bounds.dimensions; }
+    get hitbox() { return this.bounds.max.subtract(this.bounds.min); }
     ;
     /** The moment of inertia of the entity. */
     get inertia() {
@@ -549,31 +549,20 @@ class Entity {
     /** The bounds of the entity for the collision manager. */
     get bounds() {
         let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-        if (this.position === undefined) {
-            for (const vertex of this.vertices) {
-                minX = Math.min(minX, vertex.x);
-                maxX = Math.max(maxX, vertex.x);
-                minY = Math.min(minY, vertex.y);
-                maxY = Math.max(maxY, vertex.y);
-            }
-            ;
-            this.position = new Vector_1.default((minX + maxX) / 2, (minY + maxY) / 2);
-        }
-        else {
-            for (let vertex of this.vertices) {
-                minX = Math.min(minX, vertex.x);
-                maxX = Math.max(maxX, vertex.x);
-                minY = Math.min(minY, vertex.y);
-                maxY = Math.max(maxY, vertex.y);
-            }
-            ;
+        for (const vertex of this.vertices) {
+            const x = vertex.x;
+            const y = vertex.y;
+            minX = minX > x ? x : minX;
+            minY = minY > y ? y : minY;
+            maxX = maxX < x ? x : maxX;
+            maxY = maxY < y ? y : maxY;
         }
         ;
-        const dimensions = new Vector_1.default((maxX - minX), (maxY - minY));
+        if (this.position === undefined)
+            this.position = new Vector_1.default((minX + maxX) / 2, (minY + maxY) / 2);
         return {
             min: new Vector_1.default(minX, minY),
             max: new Vector_1.default(maxX, maxY),
-            dimensions
         };
     }
     ;
