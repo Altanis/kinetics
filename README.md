@@ -30,7 +30,7 @@ For a vanilla HTML/CSS/JS project, use the following script tag:
 and all of the engine's classes will be available under the `Kinetics` namespace (`window.Kinetics.System`, `window.Kinetics.Entity`, etc.).
 
 ## Benchmarks
-A 1920x1080 rectangular system of 1,000 entities was benchmarked, where each entity had a radius randomly selected between 3 and 13.
+A 1920x1080 rectangular system of 1,000 entities was benchmarked, where each entity had a radius randomly selected between 3 and 13. Entity sleeping was disabled for each benchmark.
 
 System Specifications:
 - Apple M2 chip
