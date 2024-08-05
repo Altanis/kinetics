@@ -13,6 +13,70 @@ A blazingly fast, simple 2D physics engine for JavaScript and TypeScript, for bo
 - Fast Collision Resolution
 - Collision Callbacks
 
+## Roadmap
+- [ ] Custom Forces
+- [ ] Make physics more realistic
+- [ ] Joints
+- [ ] Concave Hulls
+- [ ] API Rehaul
+
+## Usage
+```js
+/** Create a system with 100 circles. */
+const { System, Circle, Vector } = require("kinetics.ts");
+
+const system = new System({
+    tickRate: 60,
+    friction: 0.1,
+    collisionInfo: {
+        cellSize: 6,
+    },
+    bounds: new Vector(1920, 1080)
+});
+
+for (let i = 0; i < 100; i++) {
+    const radius = 10;
+
+    const entity = new Circle(
+        {
+            form: {
+                vertices: [new Vector(0, 0)],
+            },
+            radius,
+            mass: 10,
+            speed: 1,
+            rotate: false,
+            elasticity: 1,
+            angularSpeed: 1,
+        },
+        system
+    );
+    system.addEntity(entity);
+}
+
+/** The number of ticks the engine will run per second. */
+const FPS = 60;
+/** The ideal time it will take for one system update. */
+const MSPT = 1000 / FPS;
+
+/** The timestamp of the last engine update. */
+let lastTimestamp = 0;
+
+setInterval(() => {
+    let currentTime = performance.now();
+    let deltaTime = currentTime - lastTimestamp; // time in between two ticks
+    lastTimestamp = currentTime;
+
+    // `dt` is a sort of error correction mechanism.
+    // In the event the interval doesn't run at the specified
+    // MSPT, `dt` corrects all time variant operations by scaling
+    // them by its value.
+    const dt = Math.min((deltaTime / MSPT), 3);
+
+    system.update(dt);
+}, MSPT);
+```
+
 ## Installation
 
 To install this package on a server or a web framework, use the following command:

@@ -12,7 +12,6 @@ import Renderer from "./utils/Renderer";
 import Entity from "./entities/Entity";
 
 import EventEmitter from "./EventEmitter";
-import Vector from "./utils/Vector";
 
 /** The area upon which the engine is operating on. */
 export default class System extends EventEmitter {
@@ -42,13 +41,8 @@ export default class System extends EventEmitter {
     /** The configuration of the system. */
     public config: SystemConfig;
 
-    /** Flag for logging messages to console. */
-    public verbose = false;
-
     /** The amount of ticks elapsed since the start of the engine. */
     public tick = 0;
-    /** The amount of tick cycles that occur in one second. */
-    public tickRate = 0;
 
     /** The environment the system is running in. */
     public environment = Environment.Browser;
@@ -109,28 +103,10 @@ export default class System extends EventEmitter {
         
         this.camera = new Camera(config.camera || {}, this);
         this.renderer = new Renderer(config.render, this);
-        this.verbose = config.verbose || false;
 
         if (!config.collisionInfo) throw new ConfigurationError("Collision information must be specified for the system.");
 
         this.CollisionManager = new SpatialHashGrid(this, config.collisionInfo.cellSize || 12);
-
-        if (this.verbose) console.log("[PHYSICS]: Engine started.");
-
-        /** Handle ticksystem. */
-        if (this.environment === Environment.Browser && config.useRAF !== false) {
-            requestAnimationFrame(this.update.bind(this));
-            return;
-        }
-        
-        this.tickRate = config.tickRate || 60;
-        setInterval(this.update.bind(this), 1000 / this.tickRate);
-        // if (config.useRAF) requestAnimationFrame(this.update.bind(this));
-        // else {
-        //     this.tickRate = config.tickRate || 60;
-        //     setInterval(this.update.bind(this), 1000 / this.tickRate);
-        // }
-
     };
 
     /** Sets the collision engine. */
@@ -138,7 +114,7 @@ export default class System extends EventEmitter {
         this.CollisionManager = engine;
     };
 
-    private update() {        
+    public update(dt: number) {
         const time = performance.now();
 
         this.CollisionManager.clear();
@@ -146,7 +122,7 @@ export default class System extends EventEmitter {
             if (!entity) return;
 
             this.CollisionManager.insert(entity.bounds.min.x, entity.bounds.min.y, entity.hitbox.x, entity.hitbox.y, entity.id);
-            entity.update();
+            entity.update(dt);
         };
         this.CollisionManager.query();
         
@@ -155,11 +131,8 @@ export default class System extends EventEmitter {
         this.performance.worldUpdateRate = performance.now() - time;
         this.performance.memoryUsage = this.environment === Environment.Browser ?
             /** @ts-ignore */
-            performance.memory?.usedJSHeapSize / 1024 / 1024 :
+            performance?.memory?.usedJSHeapSize / 1024 / 1024 :
             process.memoryUsage().heapUsed / 1024 / 1024;
-
-        if (this.environment === Environment.Browser && this.config.useRAF !== false)
-            requestAnimationFrame(this.update.bind(this));
     };
 
     /** Adds an entity to the system. */

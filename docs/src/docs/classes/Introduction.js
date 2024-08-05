@@ -55,6 +55,28 @@ for (let i = 0; i < 100; i++) {
     );
     system.addEntity(entity);
 }
+
+/** The number of ticks the engine will run per second. */
+const FPS = 60;
+/** The ideal time it will take for one system update. */
+const MSPT = 1000 / FPS;
+
+/** The timestamp of the last engine update. */
+let lastTimestamp = 0;
+
+setInterval(() => {
+    let currentTime = performance.now();
+    let deltaTime = currentTime - lastTimestamp; // time in between two ticks
+    lastTimestamp = currentTime;
+
+    // \`dt\` is a sort of error correction mechanism.
+    // In the event the interval doesn't run at the specified
+    // MSPT, \`dt\` corrects all time variant operations by scaling
+    // them by its value.
+    const dt = Math.min((deltaTime / MSPT), 3);
+
+    system.update(dt);
+}, MSPT);
                 `} language="typescript" />
             </p>
         </>

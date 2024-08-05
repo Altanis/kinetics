@@ -31,15 +31,14 @@ function invertColor(hex) {
     var r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16), g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16), b = (255 - parseInt(hex.slice(4, 6), 16)).toString(16);
     return `#${r.padStart(2, "0")}${g.padStart(2, "0")}${b.padStart(2, "0")}`;
 }
-const width = 1920 * window.devicePixelRatio - 500;
-const height = 1080 * window.devicePixelRatio - 500;
+const width = 1920 * window.devicePixelRatio - 100;
+const height = 1080 * window.devicePixelRatio - 300;
 const centerX = width / 2;
 const centerY = height / 2;
 const sysRad = calculateApothem(width, height, centerX, centerY);
 console.log(sysRad);
 /** @ts-ignore */
 const system = window.system = new System({
-    tickRate: 60,
     friction: 0.1,
     gravity: 0,
     collisionInfo: {
@@ -114,7 +113,7 @@ const system = window.system = new System({
                 const keys = window.keys;
                 const entity = system.entities[0];
                 if (keys.size) {
-                    (_a = entity === null || entity === void 0 ? void 0 : entity.move) === null || _a === void 0 ? void 0 : _a.call(entity, ...keys);
+                    entity.move(...keys);
                 }
                 // (0, 0) is centerX, centerY
                 // const width = width / 2;
@@ -205,8 +204,8 @@ const opts = {
 //     ...opts,
 // }, system);jus
 // const heartEntity = new Entity({
-//     vertices: heart,
-//     ...opts,
+    // form: { vertices: chevron },
+    // ...opts,
 // }, system);
 // const amongUsShape = [
 //     [0, 40],
@@ -221,6 +220,8 @@ const opts = {
 //     vertices: amongUsShape,
 //     ...opts,
 // }, system);
+
+// system.addEntity(heartEntity);
 
 const car = new Entity({
     form: {
@@ -272,21 +273,21 @@ const car = new Entity({
     },
     ...opts,
 }, system);
-// system.addEntity(car);
+system.addEntity(car);
 
 
 for (let i = 0; i < 0; i++) {
     const ent2 = new Circle(Object.assign({ form: { vertices: [new Vector(1000 * Math.random(), 1000 * Math.random())] }, radius: 50 }, opts), system);
     // system.addEntity(ent2);
 }
-for (let i = 0; i < 2; i++) {
-    const isCircle = Math.random() >= 1;
+for (let i = 0; i < 100; i++) {
+    const isCircle = Math.random() < 0.5;
     /** random x & y coordinates which can be negative (given system.radius) */
     let x = i === 0 ? 0 : Math.random() * ((sysRad - 2000) * 2) - (sysRad - 2000);
     const y = i === 0 ? 0 : Math.random() * ((sysRad - 2000) * 2) - (sysRad - 2000);
     // if (x == 0) x = -100;
     // if (x > 0) x = -x - 100;
-    const sides = i == 0 ? 3 : 4
+    const sides = Math.floor(Math.random() * 10) + 3;
     // const sides = 4;
     const radius = 50;
     const color = [
@@ -350,7 +351,8 @@ for (let i = 0; i < 2; i++) {
             mass: 10,
             speed: 1,
             elasticity: 1,
-            angularSpeed: 0.01,
+            angularSpeed: 1,
+            rotate: true,
             render: {
                 // fillColor: entColor,
                 strokeColor: entColor,
@@ -449,3 +451,23 @@ document.addEventListener("click", function (event) {
 document.addEventListener("wheel", function ({ deltaY }) {
     system.camera.zoom += deltaY * (localStorage.sensitivity || 0.001);
 });
+
+const MSPT = 1000 / 60;
+let lastTickTimestamp = 0;
+
+function update_system() {
+    const currentTime = performance.now();
+    let deltaTime = currentTime - lastTickTimestamp;
+    lastTickTimestamp = currentTime;
+
+    // `dt` is a sort of error correction mechanism.
+    // In the event the interval doesn't run at the specified
+    // MSPT, `dt` corrects all time variant operations by scaling
+    // them by its value.
+    let dt = Math.min((deltaTime / MSPT), 3);
+
+    system.update(dt);
+    window.requestAnimationFrame(update_system);
+}
+
+window.requestAnimationFrame(update_system);

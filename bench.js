@@ -1,7 +1,6 @@
 const { System, Entity, Circle, Vector } = require("./dist/Index");
 
 const system = new System({
-    tickRate: 60,
     friction: 0.1,
     gravity: 0,
     collisionInfo: {
@@ -12,6 +11,9 @@ const system = new System({
     },
     bounds: new Vector(1920, 1080)
 });
+
+const FPS = 60;
+const MSPT = 1000 / 60;
 
 function random(min, max) {
     return Math.random() * (max - min) + min;
@@ -28,6 +30,7 @@ function calculateRadius(width, height, centerX, centerY) {
 // const sysRad = calculateRadius(1920, 1080, 1920 / 2, 1080 / 2);
 const sysRad = calculateRadius(1920, 1080, 1920 / 2, 1080 / 2);
 
+// Insert 50,000 pentagons.
 for (let i = 0; i < 50_000; i++) {
     const x = Math.random() * ((sysRad - 2000) * 2) - (sysRad - 2000);
     const y = Math.random() * ((sysRad - 2000) * 2) - (sysRad - 2000);
@@ -55,4 +58,15 @@ for (let i = 0; i < 50_000; i++) {
     system.addEntity(entity);
 }
 
-setInterval(() => console.log("wur/mem", system.performance.worldUpdateRate, " ", system.performance.memoryUsage));
+let lastTickTimestamp = 0;
+
+setInterval(() => {
+    let currentTime = performance.now();
+    let deltaTime = currentTime - lastTickTimestamp;
+    lastTickTimestamp = currentTime;
+
+    let dt = Math.min((deltaTime / MSPT), 3);
+
+    system.update(dt);
+    console.log("wur/mem", system.performance.worldUpdateRate, " ", system.performance.memoryUsage)
+}, 1000 / FPS);

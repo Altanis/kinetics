@@ -145,12 +145,8 @@ class System extends EventEmitter_1.default {
         this.CollisionResolver = new CollisionResolver_1.default();
         /** The entities in the system. */
         this.entities = [];
-        /** Flag for logging messages to console. */
-        this.verbose = false;
         /** The amount of ticks elapsed since the start of the engine. */
         this.tick = 0;
-        /** The amount of tick cycles that occur in one second. */
-        this.tickRate = 0;
         /** The environment the system is running in. */
         this.environment = Enums_1.Environment.Browser;
         /** The performance of the system. */
@@ -171,24 +167,9 @@ class System extends EventEmitter_1.default {
         this.gravity = config.gravity === undefined ? 0 : config.gravity;
         this.camera = new Camera_1.default(config.camera || {}, this);
         this.renderer = new Renderer_1.default(config.render, this);
-        this.verbose = config.verbose || false;
         if (!config.collisionInfo)
             throw new Error_1.ConfigurationError("Collision information must be specified for the system.");
         this.CollisionManager = new SpatialHashGrid_1.default(this, config.collisionInfo.cellSize || 12);
-        if (this.verbose)
-            console.log("[PHYSICS]: Engine started.");
-        /** Handle ticksystem. */
-        if (this.environment === Enums_1.Environment.Browser && config.useRAF !== false) {
-            requestAnimationFrame(this.update.bind(this));
-            return;
-        }
-        this.tickRate = config.tickRate || 60;
-        setInterval(this.update.bind(this), 1000 / this.tickRate);
-        // if (config.useRAF) requestAnimationFrame(this.update.bind(this));
-        // else {
-        //     this.tickRate = config.tickRate || 60;
-        //     setInterval(this.update.bind(this), 1000 / this.tickRate);
-        // }
     }
     ;
     /** Sets the collision engine. */
@@ -196,7 +177,7 @@ class System extends EventEmitter_1.default {
         this.CollisionManager = engine;
     }
     ;
-    update() {
+    update(dt) {
         var _a;
         const time = performance.now();
         this.CollisionManager.clear();
@@ -204,7 +185,7 @@ class System extends EventEmitter_1.default {
             if (!entity)
                 return;
             this.CollisionManager.insert(entity.bounds.min.x, entity.bounds.min.y, entity.hitbox.x, entity.hitbox.y, entity.id);
-            entity.update();
+            entity.update(dt);
         }
         ;
         this.CollisionManager.query();
@@ -212,10 +193,8 @@ class System extends EventEmitter_1.default {
         this.performance.worldUpdateRate = performance.now() - time;
         this.performance.memoryUsage = this.environment === Enums_1.Environment.Browser ?
             /** @ts-ignore */
-            ((_a = performance.memory) === null || _a === void 0 ? void 0 : _a.usedJSHeapSize) / 1024 / 1024 :
+            ((_a = performance === null || performance === void 0 ? void 0 : performance.memory) === null || _a === void 0 ? void 0 : _a.usedJSHeapSize) / 1024 / 1024 :
             process.memoryUsage().heapUsed / 1024 / 1024;
-        if (this.environment === Enums_1.Environment.Browser && this.config.useRAF !== false)
-            requestAnimationFrame(this.update.bind(this));
     }
     ;
     /** Adds an entity to the system. */
@@ -714,7 +693,7 @@ class Entity {
     }
     ;
     /** Update the entity. */
-    update() {
+    update(dt) {
         if (this.static)
             this.velocity.x = this.velocity.y = this.angularVelocity = 0;
         /** Apply gravity. */
@@ -722,10 +701,10 @@ class Entity {
             this.velocity.y -= this.system.gravity;
         }
         // if (this.sleeping) return;
-        this.velocity.scale(1 - this.system.friction); // Apply friction.
-        this.angularVelocity *= 1 - this.system.friction; // Apply friction.
+        this.velocity.scale(1 - this.system.friction).scale(dt); // Apply friction.
+        this.angularVelocity *= (1 - this.system.friction) * dt; // Apply friction.
         this.updatePosition(this.velocity); // Apply velocity.
-        this.angle += this.angularVelocity / 100; // Apply angular velocity.
+        this.angle += (this.angularVelocity / 100) * dt; // Apply angular velocity.
         this.acceleration.scale(0); // Reset acceleration.
         this.tick++;
         this.system.emit("entityUpdate", this);

@@ -137,12 +137,6 @@ export default [
                             },
                             {
                                 keyword: "public",
-                                name: "tickRate",
-                                returnType: "number",
-                                description: "The amount of tick cycles that occur in one second.",
-                            },
-                            {
-                                keyword: "public",
                                 name: "environment",
                                 returnType: "Environment",
                                 description: "The environment the system is running in.",
@@ -188,11 +182,16 @@ export default [
                                 ]
                             },
                             {
-                                keyword: "private",
-                                name: "update()",
+                                keyword: "public",
+                                name: "update(dt)",
                                 returnType: "void",
-                                description: "Updates the system. One completion of this is referred to as a tick.",
-                                table: [],
+                                description: "Updates the system. One completion of this is referred to as a tick. You must run this function in a loop.",
+                                table: [{
+                                    "Name": "dt",
+                                    "Type": "number",
+                                    "Optional": "No",
+                                    "Description": "An error correction value that adjusts the engine's speed. If the update time exceeds the desired MSPT, `dt` scales future physics operations to maintain the specified MSPT."
+                                }],
                             },
                             {
                                 keyword: "public",
@@ -502,20 +501,27 @@ export default [
                             },
                             {
                                 keyword: "public",
-                                name: "update()",
+                                name: "update(dt)",
                                 returnType: "void",
                                 description: "Updates the entity.",
-                                table: []
+                                table: [
+                                    {
+                                        "Name": "dt",
+                                        "Type": "number",
+                                        "Optional": "No",
+                                        "Description": "An error correction value that adjusts the engine's speed. If the update time exceeds the desired MSPT, `dt` scales future physics operations to maintain the specified MSPT."
+                                    }
+                                ]
                             },
                             {
                                 keyword: "public",
                                 name: "updatePosition(vector)",
                                 returnType: "void",
-                                description: "Updates the position <nerd>and the position of the vertices</nerd> of the entity.",
+                                description: "Updates the position <nerd>and the position of the vertices</nerd> of the entity. The vector is assumed to be scaled by `dt`.",
                                 table: [
                                     {
                                         "Name": "vector",
-                                        "Type": "Vector",
+                                        "Type": "VectorLike",
                                         "Optional": "No",
                                         "Description": "The vector to add to the position of the entity."
                                     }
@@ -1297,27 +1303,6 @@ export default [
                                 name: "collisionInfo",
                                 returnType: "{ cellSize: number }",
                                 description: "The collision information for the system. `cellSize` is the size of each cell in the spatial hashgrid.",
-                            },
-                            {
-                                keyword: "public",
-                                name: "tickRate",
-                                returnType: "number",
-                                defaultsTo: "60",
-                                description: "The tick rate of the system, in FPS.",
-                            },
-                            {
-                                keyword: "public",
-                                name: "verbose",
-                                returnType: "boolean",
-                                defaultsTo: "false",
-                                description: "Whether or not the system should log information to the console.",
-                            },
-                            {
-                                keyword: "public",
-                                name: "useRAF",
-                                returnType: "boolean",
-                                defaultsTo: "true",
-                                description: "Whether or not the system should use `requestAnimationFrame`.",
                             },
                             {
                                 keyword: "public",
