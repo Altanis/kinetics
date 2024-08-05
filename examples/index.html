@@ -34,8 +34,8 @@
             cursor: default;
         }
     </style>
-    <script src="../build/kinetics.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/gh/Altanis/kinetics.ts@master/ts/build/kinetics.min.js" defer></script> -->
+    <!-- Default script, will be replaced if localhost is present in the URL -->
+    <script id="kineticsScript" src="https://cdn.jsdelivr.net/gh/Altanis/kinetics-ts/build/kinetics.min.js"></script>
 </head>
 <body>
     <div id="stats">
@@ -49,5 +49,11 @@
     </div>
     <canvas id="canvas"></canvas>
     <script src="index.js" defer></script>
+    <script>
+        if (window.location.href.includes('localhost')) {
+            var kineticsScript = document.getElementById('kineticsScript');
+            kineticsScript.src = '../build/kinetics.js';
+        }
+    </script>
 </body>
 </html>
