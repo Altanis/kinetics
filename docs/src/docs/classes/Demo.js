@@ -10,6 +10,6 @@ export default function Demo() {
         //     left: 0,
         //     zIndex: 999,
         // }}></canvas>
-        <Iframe src="https://physics-engine-blskenfyr-codersudawudas-projects.vercel.app/" height="800" width="1000"></Iframe>
+        <Iframe src="https://physics-engine-nine.vercel.app/" height="800" width="1000"></Iframe>
     );
 };
