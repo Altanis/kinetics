@@ -35,7 +35,7 @@
         }
     </style>
     <!-- Default script, will be replaced if localhost is present in the URL -->
-    <script id="kineticsScript" src="https://cdn.jsdelivr.net/gh/Altanis/kinetics-ts/build/kinetics.min.js"></script>
+    <script id="kineticsScript" src="https://cdn.jsdelivr.net/gh/Altanis/kinetics-ts@latest/build/kinetics.min.js"></script>
 </head>
 <body>
     <div id="stats">
@@ -52,7 +52,7 @@
     <script>
         if (window.location.href.includes('localhost')) {
             var kineticsScript = document.getElementById('kineticsScript');
-            kineticsScript.src = '../build/kinetics.js';
+            kineticsScript.src = '../build/kinetics.min.js';
         }
     </script>
 </body>
