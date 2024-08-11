@@ -276,11 +276,11 @@ export default class Entity {
 
         // if (this.sleeping) return;
 
-        this.velocity.scale(1 - this.system.friction).scale(dt); // Apply friction.
-        this.angularVelocity *= (1 - this.system.friction) * dt; // Apply friction.
+        this.velocity.scale(1 - this.system.friction); // Apply friction.
+        this.angularVelocity *= (1 - this.system.friction); // Apply friction.
 
-        this.updatePosition(this.velocity); // Apply velocity.
-        this.angle += (this.angularVelocity / 100) * dt; // Apply angular velocity.
+        this.updatePosition(this.velocity.clone.scale(dt)); // Apply velocity.
+        this.angle += (this.angularVelocity) * dt; // Apply angular velocity.
 
         this.acceleration.scale(0); // Reset acceleration.
         

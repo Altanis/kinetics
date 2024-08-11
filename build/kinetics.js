@@ -373,7 +373,7 @@ class CollisionResolver {
         const mass2 = entity2.mass;
         const velocity = velocity1.clone.subtract(velocity2);
         const velocityProjection = velocity.dot(axis);
-        const impulse = (-(1 + (elasticity)) * velocityProjection) / (1 / mass1 + 1 / mass2);
+        const impulse = (-(1 + (elasticity)) * velocityProjection) / (mass1 + mass2);
         const impulseVector = axis.clone.scale(impulse);
         /** Change the velocity by impulse and elasticity. */
         if (!entity1.static)
@@ -701,10 +701,10 @@ class Entity {
             this.velocity.y -= this.system.gravity;
         }
         // if (this.sleeping) return;
-        this.velocity.scale(1 - this.system.friction).scale(dt); // Apply friction.
-        this.angularVelocity *= (1 - this.system.friction) * dt; // Apply friction.
-        this.updatePosition(this.velocity); // Apply velocity.
-        this.angle += (this.angularVelocity / 100) * dt; // Apply angular velocity.
+        this.velocity.scale(1 - this.system.friction); // Apply friction.
+        this.angularVelocity *= (1 - this.system.friction); // Apply friction.
+        this.updatePosition(this.velocity.clone.scale(dt)); // Apply velocity.
+        this.angle += (this.angularVelocity) * dt; // Apply angular velocity.
         this.acceleration.scale(0); // Reset acceleration.
         this.tick++;
         this.system.emit("entityUpdate", this);

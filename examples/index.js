@@ -223,63 +223,11 @@ const opts = {
 
 // system.addEntity(heartEntity);
 
-const car = new Entity({
-    form: {
-        components: [
-            {
-                form: {
-                    vertices: [
-                        new Vector(0, 0),
-                        new Vector(0, 200),
-                        new Vector(200, 200),
-                        new Vector(200, 0),
-                    ],
-                },
-                speed: 10,
-                elasticity: 1,
-                angularSpeed: 1,
-                mass: 1,
-                render: {
-                    strokeColor: Colors.Red,
-                }
-            },
-            {
-                form: {
-                    vertices: [new Vector(50, -20)]
-                },
-                radius: 20,
-                speed: 10,
-                elasticity: 1,
-                angularSpeed: 1,
-                mass: 1,
-                render: {
-                    strokeColor: Colors.Green,
-                }
-            },
-            {
-                form: {
-                    vertices: [new Vector(150, -20)]
-                },
-                radius: 20,
-                speed: 10,
-                elasticity: 1,
-                angularSpeed: 1,
-                mass: 1,
-                render: {
-                    strokeColor: Colors.Green,
-                }
-            }
-        ]
-    },
-    ...opts,
-}, system);
-system.addEntity(car);
-
-
 for (let i = 0; i < 0; i++) {
     const ent2 = new Circle(Object.assign({ form: { vertices: [new Vector(1000 * Math.random(), 1000 * Math.random())] }, radius: 50 }, opts), system);
     // system.addEntity(ent2);
 }
+
 for (let i = 0; i < 100; i++) {
     const isCircle = Math.random() < 0.5;
     /** random x & y coordinates which can be negative (given system.radius) */
@@ -309,7 +257,7 @@ for (let i = 0; i < 100; i++) {
         const ent = new Circle({
             form: { vertices: [new Vector(x < 0 ? x : -x, y)], },
             radius,
-            mass: 10,
+            mass: 1,
             speed: 1,
             elasticity: 1,
             angularSpeed: 0.01,
@@ -348,7 +296,7 @@ for (let i = 0; i < 100; i++) {
                 // vertices: generatePolygon(sides, radius, 0, x, y),   
             },
             // vertices: generatePolygon(sides, radius, 0, x, y),
-            mass: 10,
+            mass: 1,
             speed: 1,
             elasticity: 1,
             angularSpeed: 1,

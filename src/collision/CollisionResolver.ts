@@ -180,7 +180,7 @@ export default class CollisionResolver {
         const velocity = velocity1.clone.subtract(velocity2);
         const velocityProjection = velocity.dot(axis);
         
-        const impulse = (-(1 + (elasticity)) * velocityProjection) / (1 / mass1 + 1 / mass2);
+        const impulse = (-(1 + (elasticity)) * velocityProjection) / (mass1 + mass2);
         const impulseVector = axis.clone.scale(impulse);
 
         /** Change the velocity by impulse and elasticity. */
