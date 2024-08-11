@@ -330,7 +330,7 @@ export default [
                                 keyword: "public",
                                 name: "position",
                                 returnType: "Vector",
-                                description: "The position, or the center point, of the entity. <nerd>This changes every tick using numerical motion approximations with its respective derivatives, velocity and acceleration. This engine utilizes Euler's method for these numerical approximations. The engine does not explicitly use derivatives due to its assumption of linear motion.</nerd>",
+                                description: "The position, or the center point, of the entity. <nerd>This changes every tick using numerical motion approximations with its respective derivative of velocity. This engine utilizes Euler's method for these numerical approximations. The engine does not explicitly use derivatives due to its assumption of linear motion.</nerd>",
                                 latex: [MA]
                             },  
                             {
@@ -338,18 +338,6 @@ export default [
                                 name: "velocity",
                                 returnType: "Vector",
                                 description: "The instantaneous rate of change in displacement of the entity. <nerd>This is added to the entity's position every tick after necessary velocity calculations.</nerd>",
-                            },
-                            {
-                                keyword: "public",
-                                name: "acceleration",
-                                returnType: "Vector",
-                                description: "The acceleration of the entity. <nerd>This is added to the entity's velocity every tick after necessary acceleration calculations. The acceleration vector has its magnitude set to the entity's speed every tick to ensure movement exactly at the entity speed per tick.</nerd>",
-                            },
-                            {
-                                keyword: "public",
-                                name: "speed",
-                                returnType: "number",
-                                description: "The speed of the entity. <nerd>The measure of horizontal and vertical displacement in 90 degree motion and is added to the acceleration vector for every `move()` call.</nerd>",
                             },
                             {
                                 keyword: "public",
@@ -374,12 +362,6 @@ export default [
                                 returnType: "number",
                                 description: "The instantaneous rate of change in rotation of the entity. <nerd>This is added to the entity's angle every tick after necessary angular velocity calculations.</nerd>",
                                 latex: [AV]
-                            },
-                            {
-                                keyword: "public",
-                                name: "angularSpeed",
-                                returnType: "number",
-                                description: "The speed of the entity's rotation<nerd>, and is added to the entity's angular velocity ever `rotate()` call</nerd>.",
                             },
                             {
                                 keyword: "public",
@@ -475,27 +457,27 @@ export default [
                             },
                             {
                                 keyword: "public",
-                                name: "rotate(...directions)",
-                                description: "Rotates the entity specific directions.",
+                                name: "applyRotation(angle)",
+                                description: "Rotates the vertices of the entity around its center by `angle` radians.",
                                 table: [
                                     {
-                                        "Name": "directions",
-                                        "Type": "Movement[]",
+                                        "Name": "angle",
+                                        "Type": "number",
                                         "Optional": "No",
-                                        "Description": "The directions to rotate the entity in."
+                                        "Description": "The angle (in radians) to rotate the entity with."
                                     }
                                 ]
                             },
                             {
                                 keyword: "public",
-                                name: "move(...directions)",
-                                description: "Moves the entity specific directions.",
+                                name: "applyForce(force)",
+                                description: "Moves the entity in a specific direction.",
                                 table: [
                                     {
-                                        "Name": "directions",
-                                        "Type": "Movement[]",
+                                        "Name": "force",
+                                        "Type": "Vector",
                                         "Optional": "No",
-                                        "Description": "The directions to move the entity in."
+                                        "Description": "The force to apply the entity with."
                                     }
                                 ]
                             },
@@ -1380,12 +1362,6 @@ export default [
                             },
                             {
                                 keyword: "public",
-                                name: "speed",
-                                returnType: "number",
-                                description: "The speed of the entity.",
-                            },
-                            {
-                                keyword: "public",
                                 name: "mass",
                                 returnType: "number",
                                 description: "The mass of the entity.",
@@ -1402,12 +1378,6 @@ export default [
                                 returnType: "boolean",
                                 defaultsTo: "false",
                                 description: "Whether or not the entity is static.",
-                            },
-                            {
-                                keyword: "public",
-                                name: "angularSpeed",
-                                returnType: "number",
-                                description: "The angular speed of the entity.",
                             },
                             {
                                 keyword: "public",

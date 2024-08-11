@@ -36,16 +36,12 @@ export interface EntityConfig {
     /** The form of the entity. */
     form: EntityForm;
     
-    /** The speed of the Entity. */
-    speed: number;
     /** The mass of the Entity. */
     mass: number;
     /** The elasticity of the Entity. */
     elasticity: number;
     /** Whether or not the entity is static. Defaults to `false`. */
     static?: boolean;
-    /** The angular speed of the entity. Defaults to `0`. */
-    angularSpeed?: number;
     /** Whether or not the entity should be able to rotate. Defaults to `true`. */
     rotate?: boolean;
     /** The threshold for the linear and angular velocities to put the entity to sleep. */

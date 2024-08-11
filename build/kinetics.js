@@ -565,12 +565,8 @@ class Entity {
         this.type = Enums_1.EntityType.Polygon;
         /** The velocity of the entity. */
         this.velocity = new Vector_1.default(0, 0);
-        /** The acceleration of the entity. */
-        this.acceleration = new Vector_1.default(0, 0);
         /** The angular velocity of the entity. */
         this.angularVelocity = 0;
-        /** The angular speed of the entity. */
-        this.angularSpeed = 0;
         /** The components of the entity. */
         this.components = [];
         /** The parent of the entity (if it is a component.) */
@@ -583,8 +579,6 @@ class Entity {
         this.vertices = this.initializeVertices(info);
         this.bounds; // Initialize the bounds.
         this.mass = info.mass;
-        this.speed = info.speed;
-        this.angularSpeed = info.angularSpeed || 0;
         this.elasticity = Math.max(0, info.elasticity) || 0;
         this.static = !!info.static;
         this.sleepThreshold = info.sleepThreshold === undefined ? -1 : info.sleepThreshold;
@@ -646,50 +640,16 @@ class Entity {
     }
     ;
     /** Rotates the entity by its angular speed. */
-    rotate(...directions) {
-        for (const movement of directions) {
-            switch (movement) {
-                case Enums_1.Movement.Up:
-                    this.angularVelocity += this.angularSpeed;
-                    break;
-                case Enums_1.Movement.Down:
-                    this.angularVelocity -= this.angularSpeed;
-                    break;
-                case Enums_1.Movement.Left:
-                    this.angularVelocity -= this.angularSpeed;
-                    break;
-                case Enums_1.Movement.Right:
-                    this.angularVelocity += this.angularSpeed;
-                    break;
-                default:
-                    console.error("[SYSTEM]: Invalid angular movement key.");
-                    break;
-            }
-        }
+    applyRotation(angle) {
+        if (this.static)
+            return;
+        this.angularVelocity += angle;
     }
     /** Moves the entity by its linear speed. */
-    move(...directions) {
-        for (const movement of directions) {
-            switch (movement) {
-                case Enums_1.Movement.Up:
-                    this.acceleration.y += this.speed;
-                    break;
-                case Enums_1.Movement.Down:
-                    this.acceleration.y -= this.speed;
-                    break;
-                case Enums_1.Movement.Left:
-                    this.acceleration.x -= this.speed;
-                    break;
-                case Enums_1.Movement.Right:
-                    this.acceleration.x += this.speed;
-                    break;
-                default:
-                    console.error("[SYSTEM]: Invalid movement key.");
-                    break;
-            }
-        }
-        this.acceleration.normalize().scale(this.speed);
-        this.velocity.add(this.acceleration); // Apply acceleration.
+    applyForce(force) {
+        if (this.static)
+            return;
+        this.velocity.add(force.scale(1 / this.mass));
     }
     ;
     /** Update the entity. */
@@ -705,7 +665,6 @@ class Entity {
         this.angularVelocity *= (1 - this.system.friction); // Apply friction.
         this.updatePosition(this.velocity.clone.scale(dt)); // Apply velocity.
         this.angle += (this.angularVelocity) * dt; // Apply angular velocity.
-        this.acceleration.scale(0); // Reset acceleration.
         this.tick++;
         this.system.emit("entityUpdate", this);
     }

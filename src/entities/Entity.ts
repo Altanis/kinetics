@@ -29,10 +29,6 @@ export default class Entity {
     public position!: Vector;
     /** The velocity of the entity. */
     public velocity = new Vector(0, 0);
-    /** The acceleration of the entity. */
-    public acceleration = new Vector(0, 0);
-    /** The amount an entity can accelerate in a horizontal or vertical direction. */
-    public speed: number;
     /** The mass of the entity. */
     public mass: number;
     /** The elasticity of the entity. */
@@ -41,8 +37,6 @@ export default class Entity {
     public static: boolean;
     /** The angular velocity of the entity. */
     public angularVelocity = 0;
-    /** The angular speed of the entity. */
-    public angularSpeed = 0;
 
     /** The components of the entity. */
     public components: Entity[] = [];
@@ -168,8 +162,6 @@ export default class Entity {
         this.bounds; // Initialize the bounds.
 
         this.mass = info.mass;
-        this.speed = info.speed;
-        this.angularSpeed = info.angularSpeed || 0;
         this.elasticity = Math.max(0, info.elasticity) || 0;
         this.static = !!info.static;
         this.sleepThreshold = info.sleepThreshold === undefined ? -1 : info.sleepThreshold;
@@ -237,32 +229,15 @@ export default class Entity {
     };
 
     /** Rotates the entity by its angular speed. */
-    public rotate(...directions: Movement[]) {
-        for (const movement of directions) {
-            switch (movement) {
-                case Movement.Up: this.angularVelocity += this.angularSpeed; break;
-                case Movement.Down: this.angularVelocity -= this.angularSpeed; break;
-                case Movement.Left: this.angularVelocity -= this.angularSpeed; break;
-                case Movement.Right: this.angularVelocity += this.angularSpeed; break;
-                default: console.error("[SYSTEM]: Invalid angular movement key."); break;
-            }
-        }
+    public applyRotation(angle: number) {
+        if (this.static) return;
+        this.angularVelocity += angle;
     }
     
     /** Moves the entity by its linear speed. */
-    public move(...directions: Movement[]) {
-        for (const movement of directions) {
-            switch (movement) {
-                case Movement.Up: this.acceleration.y += this.speed; break;
-                case Movement.Down: this.acceleration.y -= this.speed; break;
-                case Movement.Left: this.acceleration.x -= this.speed; break;
-                case Movement.Right: this.acceleration.x += this.speed; break;
-                default: console.error("[SYSTEM]: Invalid movement key."); break;
-            }
-        }
-
-        this.acceleration.normalize().scale(this.speed);
-        this.velocity.add(this.acceleration); // Apply acceleration.
+    public applyForce(force: Vector) {
+        if (this.static) return;
+        this.velocity.add(force.scale(1 / this.mass));
     };
 
     /** Update the entity. */
@@ -282,8 +257,6 @@ export default class Entity {
         this.updatePosition(this.velocity.clone.scale(dt)); // Apply velocity.
         this.angle += (this.angularVelocity) * dt; // Apply angular velocity.
 
-        this.acceleration.scale(0); // Reset acceleration.
-        
         this.tick++;
         this.system.emit("entityUpdate", this);
     };

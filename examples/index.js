@@ -1,5 +1,69 @@
 const { System, Circle, Entity, Colors, Movement, Vector } = window.Kinetics;
-/** @ts-ignore */
+
+class Colour {
+    static from_rgb(r, g, b) {
+        return new Colour(r << 16 | g << 8 | b << 0);
+    }
+    static from_hex(hex) {
+        return new Colour(parseInt(hex, 16));
+    }
+    static blend_colours(primary, secondary, factor) {
+        const c = new Colour(primary.int);
+        c.blend_with(factor, secondary);
+        return c;
+    }
+    get int() {
+        return this.r << 16 | this.g << 8 | this.b << 0;
+    }
+    get css() {
+        return `rgb(${this.r}, ${this.g}, ${this.b})`;
+    }
+    get r() { return this._r; }
+    ;
+    set r(v) { this._r = v & 255; }
+    ;
+    get g() { return this._g; }
+    ;
+    set g(v) { this._g = v & 255; }
+    ;
+    get b() { return this._b; }
+    ;
+    set b(v) { this._b = v & 255; }
+    ;
+    constructor(colour) {
+        this._r = 0;
+        this._g = 0;
+        this._b = 0;
+        this.r = (colour >>> 16) & 255;
+        this.g = (colour >>> 8) & 255;
+        this.b = (colour >>> 0) & 255;
+    }
+    blend_with(factor, colour) {
+        this.r = Math.round(colour.r * factor + this.r * (1 - factor));
+        this.g = Math.round(colour.g * factor + this.g * (1 - factor));
+        this.b = Math.round(colour.b * factor + this.b * (1 - factor));
+        return this;
+    }
+    grayscale() {
+        const avg = (this.r + this.g + this.b) / 3;
+        this.r = avg;
+        this.g = avg;
+        this.b = avg;
+        return this;
+    }
+    invert() {
+        this.r = 255 - this.r;
+        this.g = 255 - this.g;
+        this.b = 255 - this.b;
+        return this;
+    }
+    clone() {
+        return new Colour(this.int);
+    }
+}
+Colour.BLACK = Colour.from_rgb(0, 0, 0);
+Colour.WHITE = Colour.from_rgb(255, 255, 255);
+
 const cellSize = window.cellSize = 2 ** 6;
 function calculateApothem(width, height, centerX, centerY) {
     const halfWidth = width / 2;
@@ -7,11 +71,12 @@ function calculateApothem(width, height, centerX, centerY) {
     const diagonal = Math.sqrt(halfWidth ** 2 + halfHeight ** 2);
     const radius = Math.max(diagonal, Math.abs(centerX), Math.abs(centerY));
     return radius;
-}
-;
+};
+
 const canvas = document.getElementById("canvas");
 canvas.width = window.innerWidth * window.devicePixelRatio;
 canvas.height = window.innerHeight * window.devicePixelRatio;
+
 /** STATS */
 const fps = document.getElementById('fps');
 const momentum = document.getElementById('momentum');
@@ -31,6 +96,7 @@ function invertColor(hex) {
     var r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16), g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16), b = (255 - parseInt(hex.slice(4, 6), 16)).toString(16);
     return `#${r.padStart(2, "0")}${g.padStart(2, "0")}${b.padStart(2, "0")}`;
 }
+
 const width = 1920 * window.devicePixelRatio - 100;
 const height = 1080 * window.devicePixelRatio - 300;
 const centerX = width / 2;
@@ -48,59 +114,21 @@ const system = window.system = new System({
         zoom: 1,
     },
     dimensions: new Vector(width, height),
-    // bounds: {
-    //     sides: 4,
-    //     radius: 1_000,
-    //     rotation: Math.PI / 4,
-    //     config: {
-    //         render: { 
-    //             strokeColor: Colors.Red,
-    //             // fillColor: Colors.Red,
-    //             strokeWidth: 5,
-    //             hooks: {
-    //                 postRender: function(entity: Entity, context: CanvasRenderingContext2D) {
-    //                     const { bounds: { min }, center, velocity, hitbox } = entity;
-    //                     if (showHitbox.checked) {
-    //                         context.strokeStyle = Colors.Blue;
-    //                         context.lineWidth = 10;
-    //                         context.strokeRect(min.x, -min.y, hitbox.x, -hitbox.y);
-    //                     }
-    //                     if (showVectors.checked) {
-    //                         context.strokeStyle = invertColor(entity.rendering.fillColor || "#FF0000");
-    //                         context.lineWidth = 1;
-    //                         context.beginPath();
-    //                         context.moveTo(center.x, -center.y);
-    //                         context.lineTo(center.x + (velocity.x) * 10, -center.y - (velocity.y) * 10);
-    //                         context.stroke();
-    //                     }
-    //                     context.beginPath();
-    //                     context.arc(entity.center.x, entity.center.y, 5, 0, 2 * Math.PI);
-    //                     context.fillStyle = Colors.Blue;
-    //                     context.fill();
-    //                 }
-    //             }
-    //         },
-    //         thickness: 100,
-    //         elasticity: 1
-    //         // static: true
-    //     }
-    // },
-    // useRAF: true,
     render: {
         canvas,
-        background: "rgb(5, 28, 31)",
-        gridColor: "#FFFFFF",
+        background: "#CDCDCD",
+        gridColor: "#000000",
         gridWidth: 1,
-        // gridSize: cellSize,
         hooks: {
             preRender: function (context) {
-                const halfWidth = system.width / 2;
-                const halfHeight = system.height / 2;
+                const halfWidth = (system.width + 100) / 2;
+                const halfHeight = (system.height + 100) / 2;
 
                 const topLeft = {x: -halfWidth, y: -halfHeight};
 
-                context.strokeStyle = Colors.Peach;
-                context.strokeRect(topLeft.x, topLeft.y, system.width, system.height);
+                context.strokeStyle = "#5B5B5B";
+                context.lineWidth = 10;
+                context.strokeRect(topLeft.x, topLeft.y, system.width + 100, system.height + 100);
             },
             postRender: function (context) {
                 var _a;
@@ -113,7 +141,15 @@ const system = window.system = new System({
                 const keys = window.keys;
                 const entity = system.entities[0];
                 if (keys.size) {
-                    entity.move(...keys);
+                    const FORCE = 1;
+                    const force_vector = new Vector(0, 0);
+
+                    if (keys.has(Movement.Up)) force_vector.y += 1;
+                    if (keys.has(Movement.Down)) force_vector.y -= 1;
+                    if (keys.has(Movement.Left)) force_vector.x -= 1;
+                    if (keys.has(Movement.Right)) force_vector.x += 1;
+
+                    entity.applyForce(force_vector.normalize().scale(FORCE));
                 }
                 // (0, 0) is centerX, centerY
                 // const width = width / 2;
@@ -122,6 +158,7 @@ const system = window.system = new System({
         },
     },
 });
+system.camera.zoom = 0.72;
 system.on("entityCreate", (entity) => {
     console.log("A new entity has been created.", entity.id);
 });
@@ -168,9 +205,7 @@ const opts = {
     angularSpeed: 1,
     render: {
         strokeColor: Colors.Red,
-        // fillColor: Colors.Red,
         strokeWidth: 1,
-        // glowIntensity: 10000,
         hooks: {
             postRender: function (entity, context) {
                 const { bounds: { min }, position: center, velocity, hitbox } = entity;
@@ -253,18 +288,17 @@ for (let i = 0; i < 100; i++) {
         "#C0C0C0",
     ];
     const entColor = color[Math.floor(Math.random() * color.length)] || Colors.Red;
+    console.log(entColor);
     if (isCircle) {
         const ent = new Circle({
             form: { vertices: [new Vector(x < 0 ? x : -x, y)], },
             radius,
             mass: 1,
-            speed: 1,
             elasticity: 1,
-            angularSpeed: 0.01,
             render: {
-                strokeColor: entColor,
-                strokeWidth: 1,
-                // glowIntensity: 10000,
+                fillColor: entColor,
+                strokeColor: Colour.blend_colours(Colour.from_hex(entColor.slice(1)), Colour.BLACK, 0.25).css,
+                strokeWidth: 4,
                 hooks: {
                     postRender: function (entity, context) {
                         const { bounds: { min }, position: center, velocity, hitbox } = entity;
@@ -297,15 +331,13 @@ for (let i = 0; i < 100; i++) {
             },
             // vertices: generatePolygon(sides, radius, 0, x, y),
             mass: 1,
-            speed: 1,
             elasticity: 1,
-            angularSpeed: 1,
             rotate: true,
             render: {
-                // fillColor: entColor,
-                strokeColor: entColor,
-                strokeWidth: 1,
-                // glowIntensity: 10000,
+                fillColor: entColor,
+                strokeColor: Colour.blend_colours(Colour.from_hex(entColor.slice(1)), Colour.BLACK, 0.25).css,
+                strokeWidth: 4,
+                // glowIntensity: 1,
                 hooks: {
                     postRender: function (entity, context) {
                         const { bounds: { min }, position: center, velocity, hitbox } = entity;
