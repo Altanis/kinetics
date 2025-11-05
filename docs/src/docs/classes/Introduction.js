@@ -33,7 +33,7 @@ const system = new System({
     collisionInfo: {
         cellSize: 6,
     },
-    bounds: new Vector(1920, 1080)
+    dimensions: new Vector(1920, 1080)
 });
 
 for (let i = 0; i < 100; i++) {
